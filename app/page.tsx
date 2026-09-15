@@ -197,6 +197,17 @@ export default function Home() {
                     "Designed an event-driven loan approval system in Go with IAM, Loan, and Notification microservices on Amazon EKS. Implemented RSA-signed JWT authentication, isolated AWS VPC subnets, and load-tested sustaining 1M+ requests/sec.",
                 },
                 {
+                  title: "Personalized LLM Fine-Tuning & Ingestion Pipeline (Llama 3.1 8B)",
+                  tech: "Llama 3.1, Unsloth, QLoRA, Modal Cloud, Python, Hugging Face",
+                  date: "2026",
+                  stars: "⭐ 2026",
+                  url: "https://github.com/Arghyann",
+                  description:
+                    "Developed an end-to-end serverless fine-tuning pipeline to adapt Meta Llama 3.1 8B Instruct for hyper-personalized conversational style and Hinglish tone replication. Architected multi-platform data harvesters to extract, sanitize, and format 10,000+ Signal and Instagram message logs into dynamic 12-turn dialogue windows. Trained a 4-bit QLoRA adapter using Unsloth and Hugging Face SFTTrainer on serverless NVIDIA A100 GPUs via Modal Cloud.",
+                  prompt: "what does love look like to you?",
+                  response: "Well... You put your phone aside for a while. That's love to me.",
+                },
+                {
                   title: "NimbusCache",
                   tech: "Java 17, Spring Boot, Maven, Concurrency",
                   date: "May 2026",
@@ -216,16 +227,42 @@ export default function Home() {
                   className="group p-6 sm:p-8 border border-border rounded-lg hover:border-muted-foreground/50 transition-all duration-500 hover:shadow-lg"
                 >
                   <div className="space-y-4">
-                    <div className="flex items-center justify-between text-xs text-muted-foreground font-mono">
+                    <div className="flex flex-wrap items-center justify-between gap-2 text-xs text-muted-foreground font-mono">
                       <span>{project.date}</span>
-                      <span>{project.tech}</span>
+                      <div className="flex items-center gap-3">
+                        {project.stars && <span className="text-zinc-400 font-medium">{project.stars}</span>}
+                        <span>{project.tech}</span>
+                      </div>
                     </div>
 
-                    <h3 className="text-xl sm:text-2xl font-medium group-hover:text-muted-foreground transition-colors duration-300">
-                      {project.title}
-                    </h3>
+                    <div className="flex items-start justify-between gap-4">
+                      <h3 className="text-xl sm:text-2xl font-medium group-hover:text-muted-foreground transition-colors duration-300">
+                        {project.title}
+                      </h3>
+                      {project.url && (
+                        <Link
+                          href={project.url}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="text-xs font-mono text-muted-foreground hover:text-foreground underline underline-offset-4 shrink-0 transition-colors"
+                        >
+                          GitHub ↗
+                        </Link>
+                      )}
+                    </div>
 
                     <p className="text-muted-foreground leading-relaxed">{project.description}</p>
+
+                    {project.prompt && project.response && (
+                      <div className="mt-4 p-4 bg-zinc-950/80 border border-zinc-800 rounded-lg font-mono text-xs sm:text-sm space-y-2">
+                        <div className="text-zinc-400">
+                          <span className="text-emerald-400 font-semibold">Prompt:</span> &quot;{project.prompt}&quot;
+                        </div>
+                        <div className="text-zinc-200">
+                          <span className="text-sky-400 font-semibold">Response:</span> &quot;{project.response}&quot;
+                        </div>
+                      </div>
+                    )}
                   </div>
                 </article>
               ))}
