@@ -252,7 +252,7 @@ export default function Home() {
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 {[
                   { name: "GitHub", handle: "@Arghyann", url: "https://github.com/Arghyann" },
-                  { name: "Email", handle: "aryanmane2016@gmail.com", url: "mailto:aryanmane2016@gmail.com" },
+                  { name: "LinkedIn", handle: "in/aryan-mane-00a6082b5", url: "https://www.linkedin.com/in/aryan-mane-00a6082b5/" },
                   { name: "Education", handle: "B.E. AI & Data Science (VESIT)", url: "#" },
                   { name: "Location", handle: "Mumbai, India", url: "#" },
                 ].map((social) => (
