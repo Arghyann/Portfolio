@@ -12,6 +12,11 @@ const geist = Geist({
 export const metadata: Metadata = {
   title: "Aryan Mane - Full Stack Developer",
   description: "Full Stack Developer working across Kubernetes, Go, AWS, and distributed systems.",
+  icons: {
+    icon: "/icon.svg",
+    shortcut: "/icon.svg",
+    apple: "/icon.svg",
+  },
 }
 
 export default function RootLayout({
