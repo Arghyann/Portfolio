@@ -135,8 +135,8 @@ export default function Home() {
                   company: "Valnee Solutions",
                   location: "Mumbai, India",
                   description:
-                    "Restructured Go backend service architecture cutting cloud infrastructure costs. Maintained multi-cloud infrastructure across AWS, Azure, and GCP, and automated CI/CD workflows using GitHub Actions and Google Cloud Run.",
-                  tech: ["Go", "AWS", "GCP", "Kubernetes", "Docker", "GitHub Actions"],
+                    "Restructured Go and FastAPI backend services, cutting cloud infrastructure costs. Built scalable cloud services on AWS, integrated Redis caching, and automated CI/CD deployment workflows.",
+                  tech: ["Go", "FastAPI", "AWS", "Redis"],
                 },
               ].map((job, index) => (
                 <div
@@ -278,7 +278,9 @@ export default function Home() {
                       <div className="text-foreground group-hover:text-muted-foreground transition-colors duration-300">
                         {social.name}
                       </div>
-                      <div className="text-sm text-muted-foreground">{social.handle}</div>
+                      <div className="text-xs sm:text-sm text-muted-foreground truncate" title={social.handle}>
+                        {social.handle}
+                      </div>
                     </div>
                   </Link>
                 ))}
