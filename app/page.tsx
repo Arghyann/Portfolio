@@ -72,10 +72,11 @@ export default function Home() {
 
               <div className="space-y-6 max-w-md">
                 <p className="text-lg sm:text-xl text-muted-foreground leading-relaxed">
-                  Frontend Developer crafting digital experiences at the intersection of
-                  <span className="text-foreground"> design</span>,<span className="text-foreground"> technology</span>,
-                  and
-                  <span className="text-foreground"> user experience</span>.
+                  Full Stack Developer working across{" "}
+                  <span className="text-foreground">Kubernetes</span>,{" "}
+                  <span className="text-foreground">Go</span>,{" "}
+                  <span className="text-foreground">AWS</span>, and{" "}
+                  <span className="text-foreground">distributed systems</span>.
                 </p>
 
                 <div className="flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-4 text-sm text-muted-foreground">
@@ -83,7 +84,7 @@ export default function Home() {
                     <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
                     Available for work
                   </div>
-                  <div>Philippines</div>
+                  <div>India</div>
                 </div>
               </div>
             </div>
@@ -92,8 +93,8 @@ export default function Home() {
               <div className="space-y-4">
                 <div className="text-sm text-muted-foreground font-mono">CURRENTLY</div>
                 <div className="space-y-2">
-                  <div className="text-foreground">Frontend Developer</div>
-                  <div className="text-muted-foreground">@ Hububble</div>
+                  <div className="text-foreground">Full Stack Developer</div>
+                  <div className="text-muted-foreground">Building Scalable Systems</div>
                   <div className="text-xs text-muted-foreground">2021 — Present</div>
                 </div>
               </div>
@@ -101,7 +102,7 @@ export default function Home() {
               <div className="space-y-4">
                 <div className="text-sm text-muted-foreground font-mono">FOCUS</div>
                 <div className="flex flex-wrap gap-2">
-                  {["HubL", "React", "TypeScript", "HubSpot CMS", "Node.js"].map((skill) => (
+                  {["Go (Golang)", "Kubernetes", "AWS", "DevOps", "TypeScript", "React", "Docker"].map((skill) => (
                     <span
                       key={skill}
                       className="px-3 py-1 text-xs border border-border rounded-full hover:border-muted-foreground/50 transition-colors duration-300"
