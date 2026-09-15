@@ -12,7 +12,7 @@ export function MacTerminal() {
         Or.. here&apos;s a better portfolio:
       </p>
 
-      <Terminal title="guest@macbook ~ zsh">
+      <Terminal title="zsh">
         <TypingAnimation delay={0}>
           $ ssh guest@aryanssh.duckdns.org
         </TypingAnimation>
