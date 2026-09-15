@@ -200,7 +200,6 @@ export default function Home() {
                   title: "Personalized LLM Fine-Tuning & Ingestion Pipeline (Llama 3.1 8B)",
                   tech: "Llama 3.1, Unsloth, QLoRA, Modal Cloud, Python, Hugging Face",
                   date: "2026",
-                  stars: "⭐ 2026",
                   url: "https://github.com/Arghyann",
                   description:
                     "Developed an end-to-end serverless fine-tuning pipeline to adapt Meta Llama 3.1 8B Instruct for hyper-personalized conversational style and Hinglish tone replication. Architected multi-platform data harvesters to extract, sanitize, and format 10,000+ Signal and Instagram message logs into dynamic 12-turn dialogue windows. Trained a 4-bit QLoRA adapter using Unsloth and Hugging Face SFTTrainer on serverless NVIDIA A100 GPUs via Modal Cloud.",
@@ -229,10 +228,7 @@ export default function Home() {
                   <div className="space-y-4">
                     <div className="flex flex-wrap items-center justify-between gap-2 text-xs text-muted-foreground font-mono">
                       <span>{project.date}</span>
-                      <div className="flex items-center gap-3">
-                        {project.stars && <span className="text-zinc-400 font-medium">{project.stars}</span>}
-                        <span>{project.tech}</span>
-                      </div>
+                      <span>{project.tech}</span>
                     </div>
 
                     <div className="flex items-start justify-between gap-4">
