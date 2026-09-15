@@ -102,7 +102,7 @@ export default function Home() {
               <div className="space-y-4">
                 <div className="text-sm text-muted-foreground font-mono">FOCUS</div>
                 <div className="flex flex-wrap gap-2">
-                  {["Go (Golang)", "Kubernetes", "AWS", "DevOps", "Java", "Docker", "PostgreSQL"].map((skill) => (
+                  {["Go", "Kubernetes", "AWS", "DevOps", "Java", "Docker", "PostgreSQL"].map((skill) => (
                     <span
                       key={skill}
                       className="px-3 py-1 text-xs border border-border rounded-full hover:border-muted-foreground/50 transition-colors duration-300"
@@ -157,7 +157,7 @@ export default function Home() {
                     <p className="text-muted-foreground leading-relaxed max-w-lg">{job.description}</p>
                   </div>
 
-                  <div className="lg:col-span-3 flex flex-wrap gap-2 lg:justify-end mt-2 lg:mt-0">
+                  <div className="lg:col-span-3 flex flex-wrap gap-2 lg:justify-end items-start content-start mt-2 lg:mt-0">
                     {job.tech.map((tech) => (
                       <span
                         key={tech}
