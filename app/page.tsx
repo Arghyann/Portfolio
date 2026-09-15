@@ -193,6 +193,7 @@ export default function Home() {
                   title: "Loan Approval Microservices Platform",
                   tech: "Go, Amazon EKS, RabbitMQ, AWS VPC, RDS PostgreSQL",
                   date: "2026",
+                  url: "https://github.com/Arghyann/Loan-approval-microservice",
                   description:
                     "Designed an event-driven loan approval system in Go with IAM, Loan, and Notification microservices on Amazon EKS. Implemented RSA-signed JWT authentication, isolated AWS VPC subnets, and load-tested sustaining 1M+ requests/sec.",
                 },
@@ -200,7 +201,6 @@ export default function Home() {
                   title: "Personalized LLM Fine-Tuning & Ingestion Pipeline (Llama 3.1 8B)",
                   tech: "Llama 3.1, Unsloth, QLoRA, Modal Cloud, Python, Hugging Face",
                   date: "2026",
-                  url: "https://github.com/Arghyann",
                   description:
                     "Developed an end-to-end serverless fine-tuning pipeline to adapt Meta Llama 3.1 8B Instruct for hyper-personalized conversational style and Hinglish tone replication. Architected multi-platform data harvesters to extract, sanitize, and format 10,000+ Signal and Instagram message logs into dynamic 12-turn dialogue windows. Trained a 4-bit QLoRA adapter using Unsloth and Hugging Face SFTTrainer on serverless NVIDIA A100 GPUs via Modal Cloud.",
                   prompt: "what does love look like to you?",
@@ -210,6 +210,7 @@ export default function Home() {
                   title: "NimbusCache",
                   tech: "Java 17, Spring Boot, Maven, Concurrency",
                   date: "May 2026",
+                  url: "https://github.com/Arghyann/SpringBoot-Cache-Service",
                   description:
                     "Built a Redis-inspired in-memory cache in Java using ConcurrentHashMap and ReentrantLocks. Implemented LRU eviction, lazy TTL expiration, background cleanup, and JSON snapshots. Verified zero deadlocks under 200 concurrent writer threads.",
                 },
@@ -217,6 +218,7 @@ export default function Home() {
                   title: "Distributed Blockchain",
                   tech: "Java 17, ECC, TCP Sockets, Cryptography",
                   date: "June 2026",
+                  url: "https://github.com/Arghyann/Blockchain",
                   description:
                     "Implemented secp256k1 elliptic curve cryptography from scratch for key generation and ECDSA digital signatures. Built a P2P network using raw TCP sockets with proof-of-work mining and longest chain rule conflict resolution.",
                 },
