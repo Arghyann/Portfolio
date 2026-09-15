@@ -261,12 +261,12 @@ export default function Home() {
                     <p className="text-muted-foreground leading-relaxed">{project.description}</p>
 
                     {project.prompt && project.response && (
-                      <div className="mt-4 p-4 bg-zinc-950/80 border border-zinc-800 rounded-lg font-mono text-xs sm:text-sm space-y-2">
-                        <div className="text-zinc-400">
-                          <span className="text-emerald-400 font-semibold">Prompt:</span> &quot;{project.prompt}&quot;
+                      <div className="mt-4 p-4 bg-zinc-950 border border-border/60 rounded-lg font-mono text-xs sm:text-sm space-y-2">
+                        <div className="text-muted-foreground">
+                          <span className="text-foreground font-medium">Prompt:</span> &quot;{project.prompt}&quot;
                         </div>
-                        <div className="text-zinc-200">
-                          <span className="text-sky-400 font-semibold">Response:</span> &quot;{project.response}&quot;
+                        <div className="text-foreground">
+                          <span className="text-muted-foreground font-medium">Response:</span> &quot;{project.response}&quot;
                         </div>
                       </div>
                     )}
