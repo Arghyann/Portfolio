@@ -1,5 +1,6 @@
 "use client"
 
+import Image from "next/image"
 import Link from "next/link"
 import { useEffect, useRef, useState } from "react"
 
@@ -61,13 +62,25 @@ export default function Home() {
         >
           <div className="grid lg:grid-cols-5 gap-12 sm:gap-16 w-full">
             <div className="lg:col-span-3 space-y-6 sm:space-y-8">
-              <div className="space-y-3 sm:space-y-2">
-                <div className="text-sm text-muted-foreground font-mono tracking-wider">PORTFOLIO / 2025</div>
-                <h1 className="text-5xl sm:text-6xl lg:text-7xl font-light tracking-tight">
-                  Aryan
-                  <br />
-                  <span className="text-muted-foreground">Mane</span>
-                </h1>
+              <div className="flex items-center justify-between gap-6">
+                <div className="space-y-3 sm:space-y-2">
+                  <div className="text-sm text-muted-foreground font-mono tracking-wider">PORTFOLIO / 2025</div>
+                  <h1 className="text-5xl sm:text-6xl lg:text-7xl font-light tracking-tight">
+                    Aryan
+                    <br />
+                    <span className="text-muted-foreground">Mane</span>
+                  </h1>
+                </div>
+
+                <div className="relative w-24 h-32 sm:w-28 sm:h-38 md:w-32 md:h-44 shrink-0">
+                  <Image
+                    src="/portrait.svg"
+                    alt="Aryan Mane line art portrait"
+                    fill
+                    className="object-contain dark:invert opacity-90 hover:opacity-100 transition-all duration-300 hover:scale-105"
+                    priority
+                  />
+                </div>
               </div>
 
               <div className="space-y-6 max-w-md">
