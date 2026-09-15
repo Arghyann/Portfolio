@@ -138,8 +138,17 @@ export default function Home() {
                   company: "Valnee Solutions",
                   location: "Mumbai, India",
                   description:
-                    "Restructured Go and FastAPI backend services, cutting cloud infrastructure costs. Built scalable cloud services on AWS, integrated Redis caching, and automated CI/CD deployment workflows.",
-                  tech: ["Go", "FastAPI", "AWS", "Redis"],
+                    "Restructured Go and FastAPI backend services, cutting cloud infrastructure costs. Built scalable cloud services on AWS, integrated Redis caching, and automated CI/CD deployment workflows. Engineered a scalable backend for an ad analysis platform using Redis as a message queue with Python worker servers to concurrently process ad payloads from the main server.",
+                  tech: ["Go", "FastAPI", "AWS", "Redis", "Python"],
+                },
+                {
+                  year: "Education",
+                  role: "B.E. AI & Data Science",
+                  company: "VESIT",
+                  location: "Mumbai, India",
+                  description:
+                    "Bachelor of Engineering in Artificial Intelligence & Data Science at Vivekananda Education Society's Institute of Technology (VESIT).",
+                  tech: ["AI & Data Science", "VESIT"],
                 },
               ].map((job, index) => (
                 <div
