@@ -289,7 +289,7 @@ export default function Home() {
 
                 <div className="space-y-4">
                   <Link
-                    href="mailto:aryanmane2016@gmail.com"
+                    href="mailto:aryan.dev.careers@gmail.com"
                     className="group flex items-center gap-3 text-foreground hover:text-muted-foreground transition-colors duration-300"
                   >
                     <span className="text-base sm:text-lg">aryanmane2016@gmail.com</span>
