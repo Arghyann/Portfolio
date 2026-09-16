@@ -292,7 +292,7 @@ export default function Home() {
                     href="mailto:aryan.dev.careers@gmail.com"
                     className="group flex items-center gap-3 text-foreground hover:text-muted-foreground transition-colors duration-300"
                   >
-                    <span className="text-base sm:text-lg">aryanmane2016@gmail.com</span>
+                    <span className="text-base sm:text-lg">aryan.dev.careers@gmail.com</span>
                     <svg
                       className="w-5 h-5 transform group-hover:translate-x-1 transition-transform duration-300"
                       fill="none"
