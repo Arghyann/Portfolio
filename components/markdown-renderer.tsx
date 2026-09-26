@@ -6,22 +6,32 @@ import remarkGfm from "remark-gfm"
 import remarkMath from "remark-math"
 import rehypeKatex from "rehype-katex"
 import "katex/dist/katex.min.css"
-import { ArrowLeft, ArrowRight, Check, Copy } from "lucide-react"
+import { ChevronLeft, ChevronRight, Check, Copy } from "lucide-react"
 
-function SingleChatCard({
+function CliChatRenderer({
   title,
   value,
-  className,
 }: {
   title?: string
   value: string
-  className?: string
 }) {
+  const [currentIdx, setCurrentIdx] = useState(0)
   const [copied, setCopied] = useState(false)
+
+  // Split multiple conversations by "===" or "---"
+  const rawSections = value
+    .split(/(?:^|\n)(?:={3,}|-{3,})\s*(?:.*?\n)?/)
+    .map((s) => s.trim())
+    .filter(Boolean)
+
+  const sections = rawSections.length > 0 ? rawSections : [value.trim()]
+  const total = sections.length
+  const safeIdx = currentIdx < total ? currentIdx : 0
+  const activeContent = sections[safeIdx]
 
   const handleCopy = async () => {
     try {
-      await navigator.clipboard.writeText(value)
+      await navigator.clipboard.writeText(activeContent)
       setCopied(true)
       setTimeout(() => setCopied(false), 2000)
     } catch (err) {
@@ -29,41 +39,77 @@ function SingleChatCard({
     }
   }
 
-  const lines = value.split("\n")
+  const goNext = () => {
+    setCurrentIdx((prev) => (prev + 1) % total)
+  }
+
+  const goPrev = () => {
+    setCurrentIdx((prev) => (prev - 1 + total) % total)
+  }
+
+  const lines = activeContent.split("\n")
 
   return (
-    <div
-      className={`rounded-lg border border-border/50 bg-theme-bg-darker/70 overflow-hidden font-mono text-sm shadow-md transition-colors hover:border-theme-accent/40 flex flex-col ${
-        className || ""
-      }`}
-    >
-      <div className="flex items-center justify-between border-b border-border/50 bg-theme-bg-darker px-4 py-2.5 select-none shrink-0">
-        <div className="flex items-center gap-2">
-          <span className="w-2 h-2 rounded-full bg-theme-accent animate-pulse" />
-          <span className="text-[11px] font-mono tracking-wider text-theme-accent uppercase font-medium truncate max-w-[220px]">
-            {title || "chat transcript"}
+    <div className="my-8 rounded-lg border border-border/50 bg-theme-bg-darker/70 overflow-hidden font-mono text-sm shadow-md transition-colors hover:border-theme-accent/40 flex flex-col">
+      {/* Top Terminal Bar */}
+      <div className="flex items-center justify-between border-b border-border/50 bg-theme-bg-darker px-4 py-2.5 select-none gap-2 flex-wrap">
+        <div className="flex items-center gap-2.5">
+          <span className="w-2.5 h-2.5 rounded-full bg-theme-accent animate-pulse shrink-0" />
+          <span className="text-[12px] font-mono tracking-wider text-theme-accent uppercase font-medium">
+            {title || "qwen-14b"}
           </span>
-        </div>
-        <button
-          onClick={handleCopy}
-          className="flex items-center gap-1.5 px-2 py-0.5 rounded text-xs text-muted-foreground hover:text-foreground hover:bg-theme-bg-lighter/40 transition-all cursor-pointer"
-          title="Copy conversation"
-        >
-          {copied ? (
-            <>
-              <Check className="h-3.5 w-3.5 text-theme-accent" />
-              <span className="text-theme-accent">Copied!</span>
-            </>
-          ) : (
-            <>
-              <Copy className="h-3.5 w-3.5" />
-              <span>Copy</span>
-            </>
+          {total > 1 && (
+            <span className="text-[11px] font-mono text-muted-foreground/80 bg-theme-bg px-2 py-0.5 rounded border border-border/40">
+              {safeIdx + 1} / {total}
+            </span>
           )}
-        </button>
+        </div>
+
+        <div className="flex items-center gap-2">
+          {total > 1 && (
+            <div className="flex items-center gap-1.5">
+              <button
+                onClick={goPrev}
+                className="p-1 rounded border border-border/60 hover:border-theme-accent text-muted-foreground hover:text-foreground transition-colors cursor-pointer"
+                title="Previous chat"
+                aria-label="Previous chat"
+              >
+                <ChevronLeft className="w-3.5 h-3.5" />
+              </button>
+              <button
+                onClick={goNext}
+                className="flex items-center gap-1 px-2.5 py-1 rounded border border-theme-accent/50 bg-theme-accent/10 hover:bg-theme-accent/20 text-theme-accent text-xs font-medium transition-colors cursor-pointer"
+                title="Next chat"
+                aria-label="Next chat"
+              >
+                <span>next chat</span>
+                <ChevronRight className="w-3.5 h-3.5" />
+              </button>
+            </div>
+          )}
+
+          <button
+            onClick={handleCopy}
+            className="flex items-center gap-1.5 px-2.5 py-1 rounded border border-border/60 text-xs text-muted-foreground hover:text-foreground hover:bg-theme-bg-lighter/40 transition-all cursor-pointer"
+            title="Copy conversation"
+          >
+            {copied ? (
+              <>
+                <Check className="h-3.5 w-3.5 text-theme-accent" />
+                <span className="text-theme-accent">Copied!</span>
+              </>
+            ) : (
+              <>
+                <Copy className="h-3.5 w-3.5" />
+                <span>Copy</span>
+              </>
+            )}
+          </button>
+        </div>
       </div>
 
-      <div className="p-4 sm:p-5 space-y-2.5 overflow-x-auto leading-relaxed text-sm flex-1">
+      {/* Terminal Content: Full width, wraps text naturally without horizontal scrolling */}
+      <div className="p-4 sm:p-5 space-y-2.5 leading-relaxed text-sm">
         {lines.map((line, idx) => {
           const trimmed = line.trim()
           if (!trimmed) {
@@ -92,12 +138,14 @@ function SingleChatCard({
             return (
               <div
                 key={idx}
-                className="flex items-start gap-2.5 text-foreground pt-1 min-w-max"
+                className="flex items-start gap-2.5 text-foreground pt-1"
               >
                 <span className="text-theme-accent font-semibold select-none shrink-0">
                   &gt; you:
                 </span>
-                <span className="text-theme-fg-bright font-medium">{cleanText}</span>
+                <span className="text-theme-fg-bright font-medium break-words">
+                  {cleanText}
+                </span>
               </div>
             )
           }
@@ -111,112 +159,22 @@ function SingleChatCard({
             return (
               <div
                 key={idx}
-                className="flex items-start gap-2.5 pl-4 sm:pl-5 text-foreground min-w-max"
+                className="flex items-start gap-2.5 pl-4 sm:pl-5 text-foreground"
               >
                 <span className="text-theme-yellow font-medium select-none shrink-0">
                   {botName.toLowerCase()}:
                 </span>
-                <span className="text-foreground/90">{botText}</span>
+                <span className="text-foreground/90 break-words">{botText}</span>
               </div>
             )
           }
 
           return (
-            <div key={idx} className="pl-6 sm:pl-7 text-foreground/80 min-w-max">
+            <div key={idx} className="pl-6 sm:pl-7 text-foreground/80 break-words">
               {trimmed}
             </div>
           )
         })}
-      </div>
-    </div>
-  )
-}
-
-function CliChatRenderer({
-  title,
-  value,
-}: {
-  title?: string
-  value: string
-}) {
-  const scrollRef = React.useRef<HTMLDivElement>(null)
-
-  // Check if multiple conversations are separated by "===" or "---"
-  const hasMultiple = /(?:^|\n)(?:={3,}|-{3,})/.test(value)
-
-  if (!hasMultiple) {
-    return (
-      <div className="my-8">
-        <SingleChatCard title={title || "qwen-14b"} value={value} />
-      </div>
-    )
-  }
-
-  // Parse multiple sections
-  const rawSections = value
-    .split(/(?:^|\n)(?:={3,}|-{3,})\s*(?:.*?\n)?/)
-    .map((s) => s.trim())
-    .filter(Boolean)
-
-  const cards = rawSections.map((content, idx) => {
-    const num = String(idx + 1).padStart(2, "0")
-    return {
-      title: `session ${num}`,
-      content,
-    }
-  })
-
-  const scroll = (direction: "left" | "right") => {
-    if (!scrollRef.current) return
-    const offset = direction === "left" ? -360 : 360
-    scrollRef.current.scrollBy({ left: offset, behavior: "smooth" })
-  }
-
-  return (
-    <div className="my-8 space-y-3">
-      {/* Generic clean header */}
-      <div className="flex items-center justify-between text-xs font-mono select-none px-1">
-        <div className="flex items-center gap-2">
-          <span className="w-2 h-2 rounded-full bg-theme-accent animate-pulse" />
-          <span className="text-theme-accent font-medium uppercase tracking-wider text-[11px]">
-            {title || "qwen-14b"}
-          </span>
-        </div>
-        <div className="flex items-center gap-1.5">
-          <button
-            onClick={() => scroll("left")}
-            className="p-1.5 rounded border border-border/60 hover:border-theme-accent text-muted-foreground hover:text-foreground transition-colors cursor-pointer"
-            aria-label="Previous session"
-          >
-            <ArrowLeft className="w-3.5 h-3.5" />
-          </button>
-          <button
-            onClick={() => scroll("right")}
-            className="p-1.5 rounded border border-border/60 hover:border-theme-accent text-muted-foreground hover:text-foreground transition-colors cursor-pointer"
-            aria-label="Next session"
-          >
-            <ArrowRight className="w-3.5 h-3.5" />
-          </button>
-        </div>
-      </div>
-
-      <div
-        ref={scrollRef}
-        className="flex gap-4 overflow-x-auto pb-4 pt-1 snap-x snap-mandatory scroll-smooth"
-        style={{ scrollbarWidth: "thin" }}
-      >
-        {cards.map((card, idx) => (
-          <div
-            key={idx}
-            className="w-[85vw] max-w-[420px] sm:w-[380px] shrink-0 snap-start flex flex-col"
-          >
-            <SingleChatCard
-              title={card.title}
-              value={card.content}
-              className="h-full"
-            />
-          </div>
-        ))}
       </div>
     </div>
   )
