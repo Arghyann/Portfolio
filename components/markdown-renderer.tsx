@@ -141,28 +141,30 @@ function CliChatRenderer({
 }) {
   const scrollRef = React.useRef<HTMLDivElement>(null)
 
-  // Check if multiple conversations are separated by "==="
-  const hasMultiple = /(?:^|\n)={3,}/.test(value)
+  // Check if multiple conversations are separated by "===" or "---"
+  const hasMultiple = /(?:^|\n)(?:={3,}|-{3,})/.test(value)
 
   if (!hasMultiple) {
     return (
       <div className="my-8">
-        <SingleChatCard title={title} value={value} />
+        <SingleChatCard title={title || "qwen-14b"} value={value} />
       </div>
     )
   }
 
-  // Parse multiple sections: "=== Title \n Content"
-  const rawSections = value.split(/(?:^|\n)={3,}\s*(.*?)\n/)
-  const cards: { title: string; content: string }[] = []
+  // Parse multiple sections
+  const rawSections = value
+    .split(/(?:^|\n)(?:={3,}|-{3,})\s*(?:.*?\n)?/)
+    .map((s) => s.trim())
+    .filter(Boolean)
 
-  for (let i = 1; i < rawSections.length; i += 2) {
-    const cardTitle = rawSections[i]?.trim() || "snippet"
-    const cardContent = rawSections[i + 1]?.trim() || ""
-    if (cardContent) {
-      cards.push({ title: cardTitle, content: cardContent })
+  const cards = rawSections.map((content, idx) => {
+    const num = String(idx + 1).padStart(2, "0")
+    return {
+      title: `session ${num}`,
+      content,
     }
-  }
+  })
 
   const scroll = (direction: "left" | "right") => {
     if (!scrollRef.current) return
@@ -172,23 +174,26 @@ function CliChatRenderer({
 
   return (
     <div className="my-8 space-y-3">
-      <div className="flex items-center justify-between text-xs font-mono select-none">
-        <span className="text-theme-accent uppercase tracking-wider flex items-center gap-2">
-          <span>Conversations ({cards.length})</span>
-          <span className="text-muted-foreground/60">· scroll left/right ↔</span>
-        </span>
+      {/* Generic clean header */}
+      <div className="flex items-center justify-between text-xs font-mono select-none px-1">
+        <div className="flex items-center gap-2">
+          <span className="w-2 h-2 rounded-full bg-theme-accent animate-pulse" />
+          <span className="text-theme-accent font-medium uppercase tracking-wider text-[11px]">
+            {title || "qwen-14b"}
+          </span>
+        </div>
         <div className="flex items-center gap-1.5">
           <button
             onClick={() => scroll("left")}
             className="p-1.5 rounded border border-border/60 hover:border-theme-accent text-muted-foreground hover:text-foreground transition-colors cursor-pointer"
-            aria-label="Scroll left"
+            aria-label="Previous session"
           >
             <ArrowLeft className="w-3.5 h-3.5" />
           </button>
           <button
             onClick={() => scroll("right")}
             className="p-1.5 rounded border border-border/60 hover:border-theme-accent text-muted-foreground hover:text-foreground transition-colors cursor-pointer"
-            aria-label="Scroll right"
+            aria-label="Next session"
           >
             <ArrowRight className="w-3.5 h-3.5" />
           </button>
