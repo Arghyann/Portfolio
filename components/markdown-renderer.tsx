@@ -8,6 +8,66 @@ import rehypeKatex from "rehype-katex"
 import "katex/dist/katex.min.css"
 import { ChevronLeft, ChevronRight, Check, Copy } from "lucide-react"
 
+interface ParsedChatMessage {
+  sender: "user" | "bot" | "system"
+  senderName: string
+  text: string
+}
+
+function parseConversation(raw: string): ParsedChatMessage[] {
+  const lines = raw.split("\n")
+  const messages: ParsedChatMessage[] = []
+  let currentMsg: ParsedChatMessage | null = null
+
+  for (const rawLine of lines) {
+    const line = rawLine.trim()
+    if (!line) continue
+
+    if (line.startsWith("[") && line.endsWith("]")) {
+      if (currentMsg) {
+        messages.push(currentMsg)
+        currentMsg = null
+      }
+      messages.push({
+        sender: "system",
+        senderName: "system",
+        text: line.slice(1, -1).trim() || line,
+      })
+      continue
+    }
+
+    const isUser = /^> ?you:\s*/i.test(line) || /^you:\s*/i.test(line)
+    if (isUser) {
+      if (currentMsg) messages.push(currentMsg)
+      const clean = line.replace(/^> ?you:\s*/i, "").replace(/^you:\s*/i, "")
+      currentMsg = { sender: "user", senderName: "You", text: clean }
+      continue
+    }
+
+    const botMatch = /^(Aryan(?:\s*\([^)]+\))?|qwen(?:\s*\([^)]+\))?|bot|assistant):\s*(.*)/i.exec(
+      line
+    )
+    if (botMatch) {
+      if (currentMsg) messages.push(currentMsg)
+      currentMsg = {
+        sender: "bot",
+        senderName: botMatch[1],
+        text: botMatch[2],
+      }
+      continue
+    }
+
+    if (currentMsg) {
+      currentMsg.text += "\n" + line
+    } else {
+      currentMsg = { sender: "bot", senderName: "bot", text: line }
+    }
+  }
+
+  if (currentMsg) messages.push(currentMsg)
+  return messages
+}
+
 function CliChatRenderer({
   title,
   value,
@@ -18,9 +78,9 @@ function CliChatRenderer({
   const [currentIdx, setCurrentIdx] = useState(0)
   const [copied, setCopied] = useState(false)
 
-  // Split multiple conversations by "===" or "---"
+  // Split multiple conversations by === or --- without consuming subsequent text
   const rawSections = value
-    .split(/(?:^|\n)(?:={3,}|-{3,})\s*(?:.*?\n)?/)
+    .split(/(?:^|\n)\s*(?:={3,}|-{3,})\s*(?:\n|$)/)
     .map((s) => s.trim())
     .filter(Boolean)
 
@@ -47,42 +107,48 @@ function CliChatRenderer({
     setCurrentIdx((prev) => (prev - 1 + total) % total)
   }
 
-  const lines = activeContent.split("\n")
+  const messages = parseConversation(activeContent)
 
   return (
-    <div className="my-8 rounded-lg border border-border/50 bg-theme-bg-darker/70 overflow-hidden font-mono text-sm shadow-md transition-colors hover:border-theme-accent/40 flex flex-col">
-      {/* Top Terminal Bar */}
-      <div className="flex items-center justify-between border-b border-border/50 bg-theme-bg-darker px-4 py-2.5 select-none gap-2 flex-wrap">
-        <div className="flex items-center gap-2.5">
-          <span className="w-2.5 h-2.5 rounded-full bg-theme-accent animate-pulse shrink-0" />
-          <span className="text-[12px] font-mono tracking-wider text-theme-accent uppercase font-medium">
-            {title || "qwen-14b"}
-          </span>
-          {total > 1 && (
-            <span className="text-[11px] font-mono text-muted-foreground/80 bg-theme-bg px-2 py-0.5 rounded border border-border/40">
-              {safeIdx + 1} / {total}
+    <div className="my-8 rounded-xl border border-border/70 bg-theme-bg-darker/90 overflow-hidden shadow-lg flex flex-col">
+      {/* Chat App Header */}
+      <div className="flex items-center justify-between border-b border-border/60 bg-theme-bg-darker px-4 py-3 select-none gap-3 flex-wrap">
+        <div className="flex items-center gap-3">
+          <div className="relative flex items-center justify-center w-8 h-8 rounded-full bg-theme-accent/15 border border-theme-accent/30 text-theme-accent font-mono text-xs font-semibold">
+            {title ? title.slice(0, 2).toUpperCase() : "AI"}
+            <span className="absolute bottom-0 right-0 w-2 h-2 rounded-full bg-theme-green border-2 border-theme-bg-darker" />
+          </div>
+          <div className="flex flex-col">
+            <span className="text-xs font-mono font-medium tracking-wide text-theme-fg-bright uppercase">
+              {title || "qwen-14b"}
             </span>
-          )}
+            <span className="text-[10px] font-mono text-muted-foreground/75">
+              direct message
+            </span>
+          </div>
         </div>
 
         <div className="flex items-center gap-2">
           {total > 1 && (
-            <div className="flex items-center gap-1.5">
+            <div className="flex items-center gap-1.5 bg-theme-bg/60 border border-border/60 rounded-lg p-1">
               <button
                 onClick={goPrev}
-                className="p-1 rounded border border-border/60 hover:border-theme-accent text-muted-foreground hover:text-foreground transition-colors cursor-pointer"
+                className="p-1 rounded hover:bg-theme-bg-lighter/60 text-muted-foreground hover:text-foreground transition-colors cursor-pointer"
                 title="Previous chat"
                 aria-label="Previous chat"
               >
                 <ChevronLeft className="w-3.5 h-3.5" />
               </button>
+              <span className="text-[11px] font-mono text-muted-foreground px-1 select-none">
+                {safeIdx + 1} / {total}
+              </span>
               <button
                 onClick={goNext}
-                className="flex items-center gap-1 px-2.5 py-1 rounded border border-theme-accent/50 bg-theme-accent/10 hover:bg-theme-accent/20 text-theme-accent text-xs font-medium transition-colors cursor-pointer"
+                className="flex items-center gap-1 px-2 py-0.5 rounded bg-theme-accent/15 hover:bg-theme-accent/25 text-theme-accent text-xs font-mono font-medium transition-colors cursor-pointer"
                 title="Next chat"
                 aria-label="Next chat"
               >
-                <span>next chat</span>
+                <span>next</span>
                 <ChevronRight className="w-3.5 h-3.5" />
               </button>
             </div>
@@ -90,88 +156,58 @@ function CliChatRenderer({
 
           <button
             onClick={handleCopy}
-            className="flex items-center gap-1.5 px-2.5 py-1 rounded border border-border/60 text-xs text-muted-foreground hover:text-foreground hover:bg-theme-bg-lighter/40 transition-all cursor-pointer"
+            className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg border border-border/60 text-xs text-muted-foreground hover:text-foreground hover:bg-theme-bg-lighter/40 transition-all cursor-pointer"
             title="Copy conversation"
           >
             {copied ? (
               <>
                 <Check className="h-3.5 w-3.5 text-theme-accent" />
-                <span className="text-theme-accent">Copied!</span>
+                <span className="text-theme-accent font-mono text-[11px]">Copied</span>
               </>
             ) : (
               <>
                 <Copy className="h-3.5 w-3.5" />
-                <span>Copy</span>
+                <span className="font-mono text-[11px]">Copy</span>
               </>
             )}
           </button>
         </div>
       </div>
 
-      {/* Terminal Content: Full width, wraps text naturally without horizontal scrolling */}
-      <div className="p-4 sm:p-5 space-y-2.5 leading-relaxed text-sm">
-        {lines.map((line, idx) => {
-          const trimmed = line.trim()
-          if (!trimmed) {
-            return <div key={idx} className="h-1.5" />
-          }
-
-          if (trimmed.startsWith("[") && trimmed.endsWith("]")) {
+      {/* Messages Stream - Left and Right Chat Bubbles */}
+      <div className="p-4 sm:p-6 space-y-3.5 bg-theme-bg/30">
+        {messages.map((msg, idx) => {
+          if (msg.sender === "system") {
             return (
-              <div
-                key={idx}
-                className="py-1.5 text-center text-xs text-muted-foreground/75 italic border-y border-border/40 my-2 select-none"
-              >
-                {trimmed}
-              </div>
-            )
-          }
-
-          const isUser =
-            /^> ?you:/i.test(trimmed) ||
-            /^you:/i.test(trimmed) ||
-            trimmed.startsWith(">")
-          if (isUser) {
-            const cleanText = trimmed
-              .replace(/^> ?/i, "")
-              .replace(/^you:\s*/i, "")
-            return (
-              <div
-                key={idx}
-                className="flex items-start gap-2.5 text-foreground pt-1"
-              >
-                <span className="text-theme-accent font-semibold select-none shrink-0">
-                  &gt; you:
-                </span>
-                <span className="text-theme-fg-bright font-medium break-words">
-                  {cleanText}
+              <div key={idx} className="flex justify-center my-2">
+                <span className="px-3 py-1 rounded-full bg-theme-bg-lighter/50 border border-border/50 text-[11px] font-mono text-muted-foreground/80 italic select-none">
+                  {msg.text}
                 </span>
               </div>
             )
           }
 
-          const botMatch = /^(Aryan(?:\s*\([^)]+\))?|qwen(?:\s*\([^)]+\))?|bot):\s*(.*)/i.exec(
-            trimmed
-          )
-          if (botMatch) {
-            const botName = botMatch[1]
-            const botText = botMatch[2]
+          if (msg.sender === "user") {
             return (
-              <div
-                key={idx}
-                className="flex items-start gap-2.5 pl-4 sm:pl-5 text-foreground"
-              >
-                <span className="text-theme-yellow font-medium select-none shrink-0">
-                  {botName.toLowerCase()}:
+              <div key={idx} className="flex flex-col items-end">
+                <span className="text-[10px] font-mono text-muted-foreground/70 mr-1 mb-1 select-none">
+                  you
                 </span>
-                <span className="text-foreground/90 break-words">{botText}</span>
+                <div className="max-w-[85%] sm:max-w-[75%] rounded-2xl rounded-tr-xs px-4 py-2.5 bg-theme-accent/20 border border-theme-accent/35 text-theme-fg-bright font-mono text-sm leading-relaxed whitespace-pre-wrap break-words shadow-sm">
+                  {msg.text}
+                </div>
               </div>
             )
           }
 
           return (
-            <div key={idx} className="pl-6 sm:pl-7 text-foreground/80 break-words">
-              {trimmed}
+            <div key={idx} className="flex flex-col items-start">
+              <span className="text-[10px] font-mono text-theme-yellow/85 ml-1 mb-1 select-none">
+                {msg.senderName}
+              </span>
+              <div className="max-w-[85%] sm:max-w-[75%] rounded-2xl rounded-tl-xs px-4 py-2.5 bg-theme-bg-lighter/80 border border-border/70 text-foreground font-mono text-sm leading-relaxed whitespace-pre-wrap break-words shadow-sm">
+                {msg.text}
+              </div>
             </div>
           )
         })}
