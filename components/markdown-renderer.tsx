@@ -8,66 +8,6 @@ import rehypeKatex from "rehype-katex"
 import "katex/dist/katex.min.css"
 import { ChevronLeft, ChevronRight, Check, Copy } from "lucide-react"
 
-interface ParsedChatMessage {
-  sender: "user" | "bot" | "system"
-  senderName: string
-  text: string
-}
-
-function parseConversation(raw: string): ParsedChatMessage[] {
-  const lines = raw.split("\n")
-  const messages: ParsedChatMessage[] = []
-  let currentMsg: ParsedChatMessage | null = null
-
-  for (const rawLine of lines) {
-    const line = rawLine.trim()
-    if (!line) continue
-
-    if (line.startsWith("[") && line.endsWith("]")) {
-      if (currentMsg) {
-        messages.push(currentMsg)
-        currentMsg = null
-      }
-      messages.push({
-        sender: "system",
-        senderName: "system",
-        text: line.slice(1, -1).trim() || line,
-      })
-      continue
-    }
-
-    const isUser = /^> ?you:\s*/i.test(line) || /^you:\s*/i.test(line)
-    if (isUser) {
-      if (currentMsg) messages.push(currentMsg)
-      const clean = line.replace(/^> ?you:\s*/i, "").replace(/^you:\s*/i, "")
-      currentMsg = { sender: "user", senderName: "You", text: clean }
-      continue
-    }
-
-    const botMatch = /^(Aryan(?:\s*\([^)]+\))?|qwen(?:\s*\([^)]+\))?|bot|assistant):\s*(.*)/i.exec(
-      line
-    )
-    if (botMatch) {
-      if (currentMsg) messages.push(currentMsg)
-      currentMsg = {
-        sender: "bot",
-        senderName: botMatch[1],
-        text: botMatch[2],
-      }
-      continue
-    }
-
-    if (currentMsg) {
-      currentMsg.text += "\n" + line
-    } else {
-      currentMsg = { sender: "bot", senderName: "bot", text: line }
-    }
-  }
-
-  if (currentMsg) messages.push(currentMsg)
-  return messages
-}
-
 function CliChatRenderer({
   title,
   value,
@@ -107,19 +47,14 @@ function CliChatRenderer({
     setCurrentIdx((prev) => (prev - 1 + total) % total)
   }
 
-  const messages = parseConversation(activeContent)
+  const lines = activeContent.split("\n")
 
   return (
     <div className="my-8 rounded-lg border border-border/50 bg-theme-bg-darker/70 overflow-hidden font-mono text-sm shadow-md transition-colors hover:border-theme-accent/40 flex flex-col">
-      {/* CLI Terminal Header */}
+      {/* Terminal Header Bar */}
       <div className="flex items-center justify-between border-b border-border/50 bg-theme-bg-darker px-4 py-2.5 select-none gap-2 flex-wrap">
-        <div className="flex items-center gap-3">
-          {/* Terminal Window Dots */}
-          <div className="flex items-center gap-1.5">
-            <span className="w-2.5 h-2.5 rounded-full bg-theme-red/80 border border-theme-red/90" />
-            <span className="w-2.5 h-2.5 rounded-full bg-theme-yellow/80 border border-theme-yellow/90" />
-            <span className="w-2.5 h-2.5 rounded-full bg-theme-green/80 border border-theme-green/90" />
-          </div>
+        <div className="flex items-center gap-2">
+          <span className="w-2 h-2 rounded-full bg-theme-accent animate-pulse" />
           <span className="text-[12px] font-mono tracking-wider text-theme-accent uppercase font-medium">
             {title || "qwen-14b"}
           </span>
@@ -171,40 +106,50 @@ function CliChatRenderer({
         </div>
       </div>
 
-      {/* CLI Stream - Left and Right Monospace Terminal Blocks */}
-      <div className="p-4 sm:p-5 space-y-3.5 bg-theme-bg-darker/40 font-mono text-xs sm:text-sm">
-        {messages.map((msg, idx) => {
-          if (msg.sender === "system") {
+      {/* Clean Lines: Name: Message without indents or > */}
+      <div className="p-4 sm:p-5 space-y-2 font-mono text-sm leading-relaxed">
+        {lines.map((line, idx) => {
+          const trimmed = line.trim()
+          if (!trimmed) {
+            return <div key={idx} className="h-2" />
+          }
+
+          if (trimmed.startsWith("[") && trimmed.endsWith("]")) {
             return (
-              <div key={idx} className="flex justify-center my-2 select-none">
-                <span className="px-3 py-1 rounded border border-border/40 bg-theme-bg/80 text-[11px] text-muted-foreground/75 italic">
-                  [ {msg.text} ]
-                </span>
+              <div
+                key={idx}
+                className="py-1 text-xs text-muted-foreground/75 italic select-none"
+              >
+                {trimmed}
               </div>
             )
           }
 
-          if (msg.sender === "user") {
+          const userMatch = /^(?:> ?)?you:\s*(.*)/i.exec(trimmed)
+          if (userMatch) {
             return (
-              <div key={idx} className="flex flex-col items-end">
-                <div className="text-[11px] text-theme-accent font-semibold mb-1 mr-1 select-none">
-                  &gt; you
-                </div>
-                <div className="max-w-[85%] sm:max-w-[75%] rounded border border-theme-accent/30 bg-theme-accent/10 text-theme-fg-bright px-3.5 py-2 leading-relaxed whitespace-pre-wrap break-words">
-                  {msg.text}
-                </div>
+              <div key={idx} className="text-foreground">
+                <span className="text-theme-accent font-semibold">You: </span>
+                <span className="text-theme-fg-bright font-medium">{userMatch[1]}</span>
+              </div>
+            )
+          }
+
+          const botMatch = /^(Aryan(?:\s*\([^)]+\))?|qwen(?:\s*\([^)]+\))?|bot|assistant):\s*(.*)/i.exec(
+            trimmed
+          )
+          if (botMatch) {
+            return (
+              <div key={idx} className="text-foreground">
+                <span className="text-theme-yellow font-semibold">{botMatch[1]}: </span>
+                <span className="text-foreground/90">{botMatch[2]}</span>
               </div>
             )
           }
 
           return (
-            <div key={idx} className="flex flex-col items-start">
-              <div className="text-[11px] text-theme-yellow font-medium mb-1 ml-1 select-none">
-                {msg.senderName} &gt;
-              </div>
-              <div className="max-w-[85%] sm:max-w-[75%] rounded border border-border/50 bg-theme-bg-lighter/40 text-foreground/95 px-3.5 py-2 leading-relaxed whitespace-pre-wrap break-words">
-                {msg.text}
-              </div>
+            <div key={idx} className="text-foreground/90">
+              {trimmed}
             </div>
           )
         })}
