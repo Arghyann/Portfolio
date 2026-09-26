@@ -185,14 +185,23 @@
     font-weight: 500;
   }
 
-  .math-block {
-    display: block;
-    text-align: center;
-    margin: 2rem 0;
-    padding: 0.75rem 0;
+  .math-block,
+  .katex-display {
+    display: block !important;
+    text-align: center !important;
+    margin: 2rem auto !important;
+    padding: 0.75rem 0 !important;
     font-size: 1.15rem;
     letter-spacing: 0.025em;
     color: var(--color-math, var(--theme-yellow, #d79921));
+    overflow-x: auto;
+    overflow-y: hidden;
+  }
+
+  .katex-display > .katex {
+    display: inline-block !important;
+    text-align: center !important;
+    color: var(--color-math, var(--theme-yellow, #d79921)) !important;
   }
 
   .blog-content :not(pre) > code,

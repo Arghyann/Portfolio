@@ -58,7 +58,27 @@ function CodeBlockRenderer({
   )
 }
 
+function preprocessMath(raw: string): string {
+  if (!raw) return ""
+  // Separate code fences so we never alter math inside pre/code blocks
+  const parts = raw.split(/(```[\s\S]*?```)/g)
+  return parts
+    .map((part) => {
+      if (part.startsWith("```")) {
+        return part
+      }
+      // Ensure all $$...$$ formulas are separated from surrounding paragraphs by blank lines
+      // and formatted cleanly as display blocks
+      return part.replace(/\$\$([\s\S]*?)\$\$/g, (_, formula) => {
+        return `\n\n$$\n${formula.trim()}\n$$\n\n`
+      })
+    })
+    .join("")
+}
+
 export function MarkdownRenderer({ content }: { content: string }) {
+  const formattedContent = preprocessMath(content)
+
   return (
     <div className="blog-content space-y-6 text-[15px] sm:text-base font-light leading-[1.85]">
       <ReactMarkdown
