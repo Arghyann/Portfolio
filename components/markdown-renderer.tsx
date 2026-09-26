@@ -6,14 +6,16 @@ import remarkGfm from "remark-gfm"
 import remarkMath from "remark-math"
 import rehypeKatex from "rehype-katex"
 import "katex/dist/katex.min.css"
-import { Check, Copy } from "lucide-react"
+import { ArrowLeft, ArrowRight, Check, Copy } from "lucide-react"
 
-function CliChatRenderer({
+function SingleChatCard({
   title,
   value,
+  className,
 }: {
   title?: string
   value: string
+  className?: string
 }) {
   const [copied, setCopied] = useState(false)
 
@@ -30,11 +32,15 @@ function CliChatRenderer({
   const lines = value.split("\n")
 
   return (
-    <div className="my-8 rounded-lg border border-border/50 bg-theme-bg-darker/70 overflow-hidden font-mono text-sm shadow-md transition-colors hover:border-theme-accent/40">
-      <div className="flex items-center justify-between border-b border-border/50 bg-theme-bg-darker px-4 py-2.5 select-none">
+    <div
+      className={`rounded-lg border border-border/50 bg-theme-bg-darker/70 overflow-hidden font-mono text-sm shadow-md transition-colors hover:border-theme-accent/40 flex flex-col ${
+        className || ""
+      }`}
+    >
+      <div className="flex items-center justify-between border-b border-border/50 bg-theme-bg-darker px-4 py-2.5 select-none shrink-0">
         <div className="flex items-center gap-2">
           <span className="w-2 h-2 rounded-full bg-theme-accent animate-pulse" />
-          <span className="text-[11px] font-mono tracking-wider text-theme-accent uppercase font-medium">
+          <span className="text-[11px] font-mono tracking-wider text-theme-accent uppercase font-medium truncate max-w-[220px]">
             {title || "chat transcript"}
           </span>
         </div>
@@ -57,7 +63,7 @@ function CliChatRenderer({
         </button>
       </div>
 
-      <div className="p-4 sm:p-6 space-y-3 overflow-x-auto leading-relaxed text-sm">
+      <div className="p-4 sm:p-5 space-y-2.5 overflow-x-auto leading-relaxed text-sm flex-1">
         {lines.map((line, idx) => {
           const trimmed = line.trim()
           if (!trimmed) {
@@ -68,7 +74,7 @@ function CliChatRenderer({
             return (
               <div
                 key={idx}
-                className="py-1.5 text-center text-xs text-muted-foreground/75 italic border-y border-border/40 my-3 select-none"
+                className="py-1.5 text-center text-xs text-muted-foreground/75 italic border-y border-border/40 my-2 select-none"
               >
                 {trimmed}
               </div>
@@ -84,7 +90,10 @@ function CliChatRenderer({
               .replace(/^> ?/i, "")
               .replace(/^you:\s*/i, "")
             return (
-              <div key={idx} className="flex items-start gap-2.5 text-foreground pt-1.5">
+              <div
+                key={idx}
+                className="flex items-start gap-2.5 text-foreground pt-1 min-w-max"
+              >
                 <span className="text-theme-accent font-semibold select-none shrink-0">
                   &gt; you:
                 </span>
@@ -100,7 +109,10 @@ function CliChatRenderer({
             const botName = botMatch[1]
             const botText = botMatch[2]
             return (
-              <div key={idx} className="flex items-start gap-2.5 pl-4 sm:pl-6 text-foreground">
+              <div
+                key={idx}
+                className="flex items-start gap-2.5 pl-4 sm:pl-5 text-foreground min-w-max"
+              >
                 <span className="text-theme-yellow font-medium select-none shrink-0">
                   {botName.toLowerCase()}:
                 </span>
@@ -110,11 +122,96 @@ function CliChatRenderer({
           }
 
           return (
-            <div key={idx} className="pl-6 sm:pl-8 text-foreground/80">
+            <div key={idx} className="pl-6 sm:pl-7 text-foreground/80 min-w-max">
               {trimmed}
             </div>
           )
         })}
+      </div>
+    </div>
+  )
+}
+
+function CliChatRenderer({
+  title,
+  value,
+}: {
+  title?: string
+  value: string
+}) {
+  const scrollRef = React.useRef<HTMLDivElement>(null)
+
+  // Check if multiple conversations are separated by "==="
+  const hasMultiple = /(?:^|\n)={3,}/.test(value)
+
+  if (!hasMultiple) {
+    return (
+      <div className="my-8">
+        <SingleChatCard title={title} value={value} />
+      </div>
+    )
+  }
+
+  // Parse multiple sections: "=== Title \n Content"
+  const rawSections = value.split(/(?:^|\n)={3,}\s*(.*?)\n/)
+  const cards: { title: string; content: string }[] = []
+
+  for (let i = 1; i < rawSections.length; i += 2) {
+    const cardTitle = rawSections[i]?.trim() || "snippet"
+    const cardContent = rawSections[i + 1]?.trim() || ""
+    if (cardContent) {
+      cards.push({ title: cardTitle, content: cardContent })
+    }
+  }
+
+  const scroll = (direction: "left" | "right") => {
+    if (!scrollRef.current) return
+    const offset = direction === "left" ? -360 : 360
+    scrollRef.current.scrollBy({ left: offset, behavior: "smooth" })
+  }
+
+  return (
+    <div className="my-8 space-y-3">
+      <div className="flex items-center justify-between text-xs font-mono select-none">
+        <span className="text-theme-accent uppercase tracking-wider flex items-center gap-2">
+          <span>Conversations ({cards.length})</span>
+          <span className="text-muted-foreground/60">· scroll left/right ↔</span>
+        </span>
+        <div className="flex items-center gap-1.5">
+          <button
+            onClick={() => scroll("left")}
+            className="p-1.5 rounded border border-border/60 hover:border-theme-accent text-muted-foreground hover:text-foreground transition-colors cursor-pointer"
+            aria-label="Scroll left"
+          >
+            <ArrowLeft className="w-3.5 h-3.5" />
+          </button>
+          <button
+            onClick={() => scroll("right")}
+            className="p-1.5 rounded border border-border/60 hover:border-theme-accent text-muted-foreground hover:text-foreground transition-colors cursor-pointer"
+            aria-label="Scroll right"
+          >
+            <ArrowRight className="w-3.5 h-3.5" />
+          </button>
+        </div>
+      </div>
+
+      <div
+        ref={scrollRef}
+        className="flex gap-4 overflow-x-auto pb-4 pt-1 snap-x snap-mandatory scroll-smooth"
+        style={{ scrollbarWidth: "thin" }}
+      >
+        {cards.map((card, idx) => (
+          <div
+            key={idx}
+            className="w-[85vw] max-w-[420px] sm:w-[380px] shrink-0 snap-start flex flex-col"
+          >
+            <SingleChatCard
+              title={card.title}
+              value={card.content}
+              className="h-full"
+            />
+          </div>
+        ))}
       </div>
     </div>
   )
