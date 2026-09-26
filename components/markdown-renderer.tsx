@@ -110,45 +110,42 @@ function CliChatRenderer({
   const messages = parseConversation(activeContent)
 
   return (
-    <div className="my-8 rounded-xl border border-border/70 bg-theme-bg-darker/90 overflow-hidden shadow-lg flex flex-col">
-      {/* Chat App Header */}
-      <div className="flex items-center justify-between border-b border-border/60 bg-theme-bg-darker px-4 py-3 select-none gap-3 flex-wrap">
+    <div className="my-8 rounded-lg border border-border/50 bg-theme-bg-darker/70 overflow-hidden font-mono text-sm shadow-md transition-colors hover:border-theme-accent/40 flex flex-col">
+      {/* CLI Terminal Header */}
+      <div className="flex items-center justify-between border-b border-border/50 bg-theme-bg-darker px-4 py-2.5 select-none gap-2 flex-wrap">
         <div className="flex items-center gap-3">
-          <div className="relative flex items-center justify-center w-8 h-8 rounded-full bg-theme-accent/15 border border-theme-accent/30 text-theme-accent font-mono text-xs font-semibold">
-            {title ? title.slice(0, 2).toUpperCase() : "AI"}
-            <span className="absolute bottom-0 right-0 w-2 h-2 rounded-full bg-theme-green border-2 border-theme-bg-darker" />
+          {/* Terminal Window Dots */}
+          <div className="flex items-center gap-1.5">
+            <span className="w-2.5 h-2.5 rounded-full bg-theme-red/80 border border-theme-red/90" />
+            <span className="w-2.5 h-2.5 rounded-full bg-theme-yellow/80 border border-theme-yellow/90" />
+            <span className="w-2.5 h-2.5 rounded-full bg-theme-green/80 border border-theme-green/90" />
           </div>
-          <div className="flex flex-col">
-            <span className="text-xs font-mono font-medium tracking-wide text-theme-fg-bright uppercase">
-              {title || "qwen-14b"}
-            </span>
-            <span className="text-[10px] font-mono text-muted-foreground/75">
-              direct message
-            </span>
-          </div>
+          <span className="text-[12px] font-mono tracking-wider text-theme-accent uppercase font-medium">
+            {title || "qwen-14b"}
+          </span>
         </div>
 
         <div className="flex items-center gap-2">
           {total > 1 && (
-            <div className="flex items-center gap-1.5 bg-theme-bg/60 border border-border/60 rounded-lg p-1">
+            <div className="flex items-center gap-1.5">
               <button
                 onClick={goPrev}
-                className="p-1 rounded hover:bg-theme-bg-lighter/60 text-muted-foreground hover:text-foreground transition-colors cursor-pointer"
+                className="p-1 rounded border border-border/60 hover:border-theme-accent text-muted-foreground hover:text-foreground transition-colors cursor-pointer"
                 title="Previous chat"
                 aria-label="Previous chat"
               >
                 <ChevronLeft className="w-3.5 h-3.5" />
               </button>
-              <span className="text-[11px] font-mono text-muted-foreground px-1 select-none">
+              <span className="text-[11px] font-mono text-muted-foreground/80 px-1 select-none">
                 {safeIdx + 1} / {total}
               </span>
               <button
                 onClick={goNext}
-                className="flex items-center gap-1 px-2 py-0.5 rounded bg-theme-accent/15 hover:bg-theme-accent/25 text-theme-accent text-xs font-mono font-medium transition-colors cursor-pointer"
+                className="flex items-center gap-1 px-2.5 py-1 rounded border border-theme-accent/50 bg-theme-accent/10 hover:bg-theme-accent/20 text-theme-accent text-xs font-medium font-mono transition-colors cursor-pointer"
                 title="Next chat"
                 aria-label="Next chat"
               >
-                <span>next</span>
+                <span>next chat</span>
                 <ChevronRight className="w-3.5 h-3.5" />
               </button>
             </div>
@@ -156,32 +153,32 @@ function CliChatRenderer({
 
           <button
             onClick={handleCopy}
-            className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg border border-border/60 text-xs text-muted-foreground hover:text-foreground hover:bg-theme-bg-lighter/40 transition-all cursor-pointer"
+            className="flex items-center gap-1.5 px-2.5 py-1 rounded border border-border/60 text-xs font-mono text-muted-foreground hover:text-foreground hover:bg-theme-bg-lighter/40 transition-all cursor-pointer"
             title="Copy conversation"
           >
             {copied ? (
               <>
                 <Check className="h-3.5 w-3.5 text-theme-accent" />
-                <span className="text-theme-accent font-mono text-[11px]">Copied</span>
+                <span className="text-theme-accent text-[11px]">Copied!</span>
               </>
             ) : (
               <>
                 <Copy className="h-3.5 w-3.5" />
-                <span className="font-mono text-[11px]">Copy</span>
+                <span className="text-[11px]">Copy</span>
               </>
             )}
           </button>
         </div>
       </div>
 
-      {/* Messages Stream - Left and Right Chat Bubbles */}
-      <div className="p-4 sm:p-6 space-y-3.5 bg-theme-bg/30">
+      {/* CLI Stream - Left and Right Monospace Terminal Blocks */}
+      <div className="p-4 sm:p-5 space-y-3.5 bg-theme-bg-darker/40 font-mono text-xs sm:text-sm">
         {messages.map((msg, idx) => {
           if (msg.sender === "system") {
             return (
-              <div key={idx} className="flex justify-center my-2">
-                <span className="px-3 py-1 rounded-full bg-theme-bg-lighter/50 border border-border/50 text-[11px] font-mono text-muted-foreground/80 italic select-none">
-                  {msg.text}
+              <div key={idx} className="flex justify-center my-2 select-none">
+                <span className="px-3 py-1 rounded border border-border/40 bg-theme-bg/80 text-[11px] text-muted-foreground/75 italic">
+                  [ {msg.text} ]
                 </span>
               </div>
             )
@@ -190,10 +187,10 @@ function CliChatRenderer({
           if (msg.sender === "user") {
             return (
               <div key={idx} className="flex flex-col items-end">
-                <span className="text-[10px] font-mono text-muted-foreground/70 mr-1 mb-1 select-none">
-                  you
-                </span>
-                <div className="max-w-[85%] sm:max-w-[75%] rounded-2xl rounded-tr-xs px-4 py-2.5 bg-theme-accent/20 border border-theme-accent/35 text-theme-fg-bright font-mono text-sm leading-relaxed whitespace-pre-wrap break-words shadow-sm">
+                <div className="text-[11px] text-theme-accent font-semibold mb-1 mr-1 select-none">
+                  &gt; you
+                </div>
+                <div className="max-w-[85%] sm:max-w-[75%] rounded border border-theme-accent/30 bg-theme-accent/10 text-theme-fg-bright px-3.5 py-2 leading-relaxed whitespace-pre-wrap break-words">
                   {msg.text}
                 </div>
               </div>
@@ -202,10 +199,10 @@ function CliChatRenderer({
 
           return (
             <div key={idx} className="flex flex-col items-start">
-              <span className="text-[10px] font-mono text-theme-yellow/85 ml-1 mb-1 select-none">
-                {msg.senderName}
-              </span>
-              <div className="max-w-[85%] sm:max-w-[75%] rounded-2xl rounded-tl-xs px-4 py-2.5 bg-theme-bg-lighter/80 border border-border/70 text-foreground font-mono text-sm leading-relaxed whitespace-pre-wrap break-words shadow-sm">
+              <div className="text-[11px] text-theme-yellow font-medium mb-1 ml-1 select-none">
+                {msg.senderName} &gt;
+              </div>
+              <div className="max-w-[85%] sm:max-w-[75%] rounded border border-border/50 bg-theme-bg-lighter/40 text-foreground/95 px-3.5 py-2 leading-relaxed whitespace-pre-wrap break-words">
                 {msg.text}
               </div>
             </div>
