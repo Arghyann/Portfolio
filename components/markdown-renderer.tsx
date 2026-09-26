@@ -8,6 +8,118 @@ import rehypeKatex from "rehype-katex"
 import "katex/dist/katex.min.css"
 import { Check, Copy } from "lucide-react"
 
+function CliChatRenderer({
+  title,
+  value,
+}: {
+  title?: string
+  value: string
+}) {
+  const [copied, setCopied] = useState(false)
+
+  const handleCopy = async () => {
+    try {
+      await navigator.clipboard.writeText(value)
+      setCopied(true)
+      setTimeout(() => setCopied(false), 2000)
+    } catch (err) {
+      console.error(err)
+    }
+  }
+
+  const lines = value.split("\n")
+
+  return (
+    <div className="my-8 rounded-lg border border-border/50 bg-theme-bg-darker/70 overflow-hidden font-mono text-sm shadow-md transition-colors hover:border-theme-accent/40">
+      <div className="flex items-center justify-between border-b border-border/50 bg-theme-bg-darker px-4 py-2.5 select-none">
+        <div className="flex items-center gap-2">
+          <span className="w-2 h-2 rounded-full bg-theme-accent animate-pulse" />
+          <span className="text-[11px] font-mono tracking-wider text-theme-accent uppercase font-medium">
+            {title || "chat transcript"}
+          </span>
+        </div>
+        <button
+          onClick={handleCopy}
+          className="flex items-center gap-1.5 px-2 py-0.5 rounded text-xs text-muted-foreground hover:text-foreground hover:bg-theme-bg-lighter/40 transition-all cursor-pointer"
+          title="Copy conversation"
+        >
+          {copied ? (
+            <>
+              <Check className="h-3.5 w-3.5 text-theme-accent" />
+              <span className="text-theme-accent">Copied!</span>
+            </>
+          ) : (
+            <>
+              <Copy className="h-3.5 w-3.5" />
+              <span>Copy</span>
+            </>
+          )}
+        </button>
+      </div>
+
+      <div className="p-4 sm:p-6 space-y-3 overflow-x-auto leading-relaxed text-sm">
+        {lines.map((line, idx) => {
+          const trimmed = line.trim()
+          if (!trimmed) {
+            return <div key={idx} className="h-1.5" />
+          }
+
+          if (trimmed.startsWith("[") && trimmed.endsWith("]")) {
+            return (
+              <div
+                key={idx}
+                className="py-1.5 text-center text-xs text-muted-foreground/75 italic border-y border-border/40 my-3 select-none"
+              >
+                {trimmed}
+              </div>
+            )
+          }
+
+          const isUser =
+            /^> ?you:/i.test(trimmed) ||
+            /^you:/i.test(trimmed) ||
+            trimmed.startsWith(">")
+          if (isUser) {
+            const cleanText = trimmed
+              .replace(/^> ?/i, "")
+              .replace(/^you:\s*/i, "")
+            return (
+              <div key={idx} className="flex items-start gap-2.5 text-foreground pt-1.5">
+                <span className="text-theme-accent font-semibold select-none shrink-0">
+                  &gt; you:
+                </span>
+                <span className="text-theme-fg-bright font-medium">{cleanText}</span>
+              </div>
+            )
+          }
+
+          const botMatch = /^(Aryan(?:\s*\([^)]+\))?|qwen(?:\s*\([^)]+\))?|bot):\s*(.*)/i.exec(
+            trimmed
+          )
+          if (botMatch) {
+            const botName = botMatch[1]
+            const botText = botMatch[2]
+            return (
+              <div key={idx} className="flex items-start gap-2.5 pl-4 sm:pl-6 text-foreground">
+                <span className="text-theme-yellow font-medium select-none shrink-0">
+                  {botName.toLowerCase()}:
+                </span>
+                <span className="text-foreground/90">{botText}</span>
+              </div>
+            )
+          }
+
+          return (
+            <div key={idx} className="pl-6 sm:pl-8 text-foreground/80">
+              {trimmed}
+            </div>
+          )
+        })}
+      </div>
+    </div>
+  )
+}
+
 function CodeBlockRenderer({
   language,
   value,
@@ -159,7 +271,19 @@ export function MarkdownRenderer({ content }: { content: string }) {
               )
             }
 
+            const lang = match ? match[1].toLowerCase() : ""
             const codeString = String(children).replace(/\n$/, "")
+
+            if (lang === "cli" || lang === "chat" || lang === "terminal") {
+              const metaTitle = (node?.data as any)?.meta as string | undefined
+              return (
+                <CliChatRenderer
+                  title={metaTitle || undefined}
+                  value={codeString}
+                />
+              )
+            }
+
             return (
               <CodeBlockRenderer
                 language={match ? match[1] : undefined}
