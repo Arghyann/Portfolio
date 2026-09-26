@@ -49,43 +49,56 @@ function CliChatRenderer({
     }
   }
 
-  const goNext = () => {
-    setCurrentIdx((prev) => (prev + 1) % total)
-  }
-
-  const goPrev = () => {
-    setCurrentIdx((prev) => (prev - 1 + total) % total)
-  }
-
-  const handleKeyDown = (e: React.KeyboardEvent) => {
-    if (e.key === "l" || e.key === "ArrowRight") {
-      e.preventDefault()
-      setActivePane("messages")
-    } else if (e.key === "h" || e.key === "ArrowLeft") {
-      e.preventDefault()
-      setActivePane("sidebar")
-    } else if (e.key === "Tab") {
-      e.preventDefault()
-      setActivePane((prev) => (prev === "sidebar" ? "messages" : "sidebar"))
-    } else if (e.key === "ArrowDown" || e.key === "j") {
-      e.preventDefault()
-      if (activePane === "sidebar") {
-        goNext()
-      } else {
-        messageAreaRef.current?.scrollBy({ top: 48, behavior: "smooth" })
+  // Global key listener so j/k/h/l work immediately without needing to click first
+  React.useEffect(() => {
+    const handleGlobalKeyDown = (e: KeyboardEvent) => {
+      // Don't intercept if user is typing in an input or textarea
+      if (
+        e.target instanceof HTMLInputElement ||
+        e.target instanceof HTMLTextAreaElement ||
+        (e.target as HTMLElement)?.isContentEditable
+      ) {
+        return
       }
-    } else if (e.key === "ArrowUp" || e.key === "k") {
-      e.preventDefault()
-      if (activePane === "sidebar") {
-        goPrev()
-      } else {
-        messageAreaRef.current?.scrollBy({ top: -48, behavior: "smooth" })
+
+      // Only respond if this terminal is in view
+      if (!containerRef.current) return
+      const rect = containerRef.current.getBoundingClientRect()
+      const inView = rect.top < window.innerHeight && rect.bottom > 0
+      if (!inView) return
+
+      if (e.key === "l" || e.key === "ArrowRight") {
+        e.preventDefault()
+        setActivePane("messages")
+      } else if (e.key === "h" || e.key === "ArrowLeft") {
+        e.preventDefault()
+        setActivePane("sidebar")
+      } else if (e.key === "Tab") {
+        e.preventDefault()
+        setActivePane((prev) => (prev === "sidebar" ? "messages" : "sidebar"))
+      } else if (e.key === "ArrowDown" || e.key === "j") {
+        e.preventDefault()
+        if (activePane === "sidebar") {
+          setCurrentIdx((prev) => (prev + 1) % total)
+        } else {
+          messageAreaRef.current?.scrollBy({ top: 50, behavior: "smooth" })
+        }
+      } else if (e.key === "ArrowUp" || e.key === "k") {
+        e.preventDefault()
+        if (activePane === "sidebar") {
+          setCurrentIdx((prev) => (prev - 1 + total) % total)
+        } else {
+          messageAreaRef.current?.scrollBy({ top: -50, behavior: "smooth" })
+        }
+      } else if (e.key >= "1" && e.key <= String(Math.min(total, 9))) {
+        e.preventDefault()
+        setCurrentIdx(Number(e.key) - 1)
       }
-    } else if (e.key >= "1" && e.key <= String(Math.min(total, 9))) {
-      e.preventDefault()
-      setCurrentIdx(Number(e.key) - 1)
     }
-  }
+
+    window.addEventListener("keydown", handleGlobalKeyDown)
+    return () => window.removeEventListener("keydown", handleGlobalKeyDown)
+  }, [total, activePane])
 
   const lines = activeContent.split("\n")
 
@@ -93,9 +106,8 @@ function CliChatRenderer({
     <div
       ref={containerRef}
       tabIndex={0}
-      onKeyDown={handleKeyDown}
       className="my-8 rounded border border-border bg-theme-bg-darker overflow-hidden font-mono text-sm shadow-xl focus:outline-none focus:ring-1 focus:ring-theme-accent/60 transition-all select-text"
-      title="Click to focus: use 'h'/'l' to switch pane, 'j'/'k' to navigate/scroll"
+      title="Vim navigation: 'h'/'l' switch pane, 'j'/'k' navigate/scroll"
     >
       {/* Top Header Bar - Inverted nchat style */}
       <div className="bg-foreground text-background px-3 py-1 font-mono text-xs font-semibold flex items-center justify-between select-none">
@@ -113,16 +125,15 @@ function CliChatRenderer({
 
       {/* Main TUI Body: Constant Fixed Height with Hidden Scrollbars */}
       <div className="flex flex-col sm:flex-row h-[360px] sm:h-[400px]">
-        {/* Sidebar */}
+        {/* Sidebar - No Cursor */}
         {total > 1 && (
           <div
             onClick={() => setActivePane("sidebar")}
-            className="sm:w-44 border-b sm:border-b-0 sm:border-r border-border/60 bg-theme-bg-darker/90 p-2 flex sm:flex-col gap-1 overflow-x-auto sm:overflow-y-auto shrink-0 select-none no-scrollbar cursor-pointer"
+            className="sm:w-44 border-b sm:border-b-0 sm:border-r border-border/60 bg-theme-bg-darker/90 p-2 flex sm:flex-col gap-1 overflow-x-auto sm:overflow-y-auto shrink-0 select-none no-scrollbar"
           >
             {sections.map((_, idx) => {
               const isActive = idx === safeIdx
               const label = `session ${String(idx + 1).padStart(2, "0")}`
-              const isCursorHere = isActive && activePane === "sidebar"
 
               return (
                 <button
@@ -138,12 +149,7 @@ function CliChatRenderer({
                       : "text-muted-foreground hover:text-foreground hover:bg-theme-bg-lighter/40"
                   }`}
                 >
-                  <span className="flex items-center">
-                    {label}
-                    {isCursorHere && (
-                      <span className="inline-block w-1.5 h-3.5 bg-background animate-pulse ml-1.5" />
-                    )}
-                  </span>
+                  <span>{label}</span>
                   <span className="text-[10px] opacity-60">[{idx + 1}]</span>
                 </button>
               )
@@ -151,67 +157,84 @@ function CliChatRenderer({
           </div>
         )}
 
-        {/* Message Area - Scrollable with No Scrollbars */}
-        <div
-          ref={messageAreaRef}
-          onClick={() => setActivePane("messages")}
-          className="flex-1 p-4 sm:p-5 space-y-2.5 bg-theme-bg-darker/40 overflow-y-auto leading-relaxed no-scrollbar cursor-text"
-        >
-          {lines.map((line, idx) => {
-            const trimmed = line.trim()
-            if (!trimmed) {
-              return <div key={idx} className="h-2" />
-            }
+        {/* Right Area: Messages + Bottom Input Prompt with Vim Cursor */}
+        <div className="flex-1 flex flex-col bg-theme-bg-darker/40 min-w-0">
+          <div
+            ref={messageAreaRef}
+            onClick={() => setActivePane("messages")}
+            className="flex-1 p-4 sm:p-5 space-y-2.5 overflow-y-auto leading-relaxed no-scrollbar cursor-text"
+          >
+            {lines.map((line, idx) => {
+              const trimmed = line.trim()
+              if (!trimmed) {
+                return <div key={idx} className="h-2" />
+              }
 
-            if (trimmed.startsWith("[") && trimmed.endsWith("]")) {
+              if (trimmed.startsWith("[") && trimmed.endsWith("]")) {
+                return (
+                  <div
+                    key={idx}
+                    className="py-1 text-xs text-muted-foreground/75 italic select-none"
+                  >
+                    {trimmed}
+                  </div>
+                )
+              }
+
+              const userMatch = /^(?:> ?)?you:\s*(.*)/i.exec(trimmed)
+              if (userMatch) {
+                return (
+                  <div key={idx} className="text-foreground">
+                    <span className="text-theme-accent font-semibold">You: </span>
+                    <span className="text-theme-fg-bright font-medium">{userMatch[1]}</span>
+                  </div>
+                )
+              }
+
+              const botMatch = /^(Aryan(?:\s*\([^)]+\))?|qwen(?:\s*\([^)]+\))?|bot|assistant):\s*(.*)/i.exec(
+                trimmed
+              )
+              if (botMatch) {
+                return (
+                  <div key={idx} className="text-foreground">
+                    <span className="text-theme-yellow font-semibold">{botMatch[1]}: </span>
+                    <span className="text-foreground/90">{botMatch[2]}</span>
+                  </div>
+                )
+              }
+
               return (
-                <div
-                  key={idx}
-                  className="py-1 text-xs text-muted-foreground/75 italic select-none"
-                >
+                <div key={idx} className="text-foreground/90">
                   {trimmed}
                 </div>
               )
-            }
+            })}
+          </div>
 
-            const userMatch = /^(?:> ?)?you:\s*(.*)/i.exec(trimmed)
-            if (userMatch) {
-              return (
-                <div key={idx} className="text-foreground">
-                  <span className="text-theme-accent font-semibold">You: </span>
-                  <span className="text-theme-fg-bright font-medium">{userMatch[1]}</span>
-                </div>
-              )
-            }
-
-            const botMatch = /^(Aryan(?:\s*\([^)]+\))?|qwen(?:\s*\([^)]+\))?|bot|assistant):\s*(.*)/i.exec(
-              trimmed
-            )
-            if (botMatch) {
-              return (
-                <div key={idx} className="text-foreground">
-                  <span className="text-theme-yellow font-semibold">{botMatch[1]}: </span>
-                  <span className="text-foreground/90">{botMatch[2]}</span>
-                </div>
-              )
-            }
-
-            return (
-              <div key={idx} className="text-foreground/90">
-                {trimmed}
-              </div>
-            )
-          })}
-          {activePane === "messages" && (
-            <div className="pt-2 text-muted-foreground/60 select-none flex items-center gap-1 text-xs">
-              <span>-- END OF CHAT --</span>
-              <span className="inline-block w-2 h-3.5 bg-foreground animate-pulse" />
-            </div>
-          )}
+          {/* Prompt line with Vim Cursor in message pane */}
+          <div
+            onClick={() => setActivePane("messages")}
+            className="border-t border-border/50 bg-theme-bg-darker/80 px-3 py-1.5 font-mono text-xs flex items-center select-none gap-2"
+          >
+            <span className="text-theme-accent font-bold">&gt;</span>
+            {activePane === "messages" ? (
+              <span className="flex items-center text-foreground font-mono text-xs">
+                <span>chat buffer</span>
+                <span className="inline-block w-2 h-3.5 bg-foreground animate-pulse ml-1.5 align-middle" />
+              </span>
+            ) : (
+              <span className="text-[11px] text-muted-foreground/70">
+                press &apos;l&apos; to enter chat buffer
+              </span>
+            )}
+            <span className="text-[10px] text-muted-foreground/50 ml-auto">
+              {safeIdx + 1}/{total}
+            </span>
+          </div>
         </div>
       </div>
 
-      {/* Bottom Status / Keybind Bar with Vim Mode & Cursor */}
+      {/* Bottom Status / Keybind Bar */}
       <div className="border-t border-border/60 bg-theme-bg-darker px-3 py-1.5 font-mono text-[11px] text-muted-foreground flex items-center justify-between select-none gap-2 flex-wrap">
         <div className="flex items-center gap-2.5">
           <span className="text-theme-accent font-bold tracking-wider">
