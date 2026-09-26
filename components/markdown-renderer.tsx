@@ -18,6 +18,7 @@ function CliChatRenderer({
   const [currentIdx, setCurrentIdx] = useState(0)
   const [copied, setCopied] = useState(false)
   const containerRef = React.useRef<HTMLDivElement>(null)
+  const messageAreaRef = React.useRef<HTMLDivElement>(null)
 
   // Split multiple conversations by === or --- without consuming subsequent text
   const rawSections = value
@@ -29,6 +30,13 @@ function CliChatRenderer({
   const total = sections.length
   const safeIdx = currentIdx < total ? currentIdx : 0
   const activeContent = sections[safeIdx]
+
+  // Reset scroll to top when changing sessions
+  React.useEffect(() => {
+    if (messageAreaRef.current) {
+      messageAreaRef.current.scrollTop = 0
+    }
+  }, [safeIdx])
 
   const handleCopy = async () => {
     try {
@@ -80,11 +88,14 @@ function CliChatRenderer({
         </div>
       </div>
 
-      {/* Main TUI Body: Sidebar + Message Area */}
-      <div className="flex flex-col sm:flex-row min-h-[320px]">
+      {/* Main TUI Body: Constant Fixed Height */}
+      <div className="flex flex-col sm:flex-row h-[360px] sm:h-[400px]">
         {/* Sidebar */}
         {total > 1 && (
-          <div className="sm:w-44 border-b sm:border-b-0 sm:border-r border-border/60 bg-theme-bg-darker/90 p-2 flex sm:flex-col gap-1 overflow-x-auto sm:overflow-x-visible shrink-0 select-none">
+          <div
+            className="sm:w-44 border-b sm:border-b-0 sm:border-r border-border/60 bg-theme-bg-darker/90 p-2 flex sm:flex-col gap-1 overflow-x-auto sm:overflow-y-auto shrink-0 select-none"
+            style={{ scrollbarWidth: "thin" }}
+          >
             {sections.map((_, idx) => {
               const isActive = idx === safeIdx
               const label = `session ${String(idx + 1).padStart(2, "0")}`
@@ -106,8 +117,12 @@ function CliChatRenderer({
           </div>
         )}
 
-        {/* Message Area */}
-        <div className="flex-1 p-4 sm:p-5 space-y-2.5 bg-theme-bg-darker/40 overflow-y-auto leading-relaxed">
+        {/* Message Area - Scrollable with Constant Height */}
+        <div
+          ref={messageAreaRef}
+          className="flex-1 p-4 sm:p-5 space-y-2.5 bg-theme-bg-darker/40 overflow-y-auto leading-relaxed"
+          style={{ scrollbarWidth: "thin" }}
+        >
           {lines.map((line, idx) => {
             const trimmed = line.trim()
             if (!trimmed) {
