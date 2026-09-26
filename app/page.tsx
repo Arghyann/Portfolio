@@ -42,7 +42,7 @@ export default function Home() {
               key={section}
               onClick={() => document.getElementById(section)?.scrollIntoView({ behavior: "smooth" })}
               className={`w-2 h-8 rounded-full transition-all duration-500 ${
-                activeSection === section ? "bg-foreground" : "bg-muted-foreground/30 hover:bg-muted-foreground/60"
+                activeSection === section ? "bg-theme-accent" : "bg-muted-foreground/30 hover:bg-muted-foreground/60"
               }`}
               aria-label={`Navigate to ${section}`}
             />
@@ -59,7 +59,11 @@ export default function Home() {
           <div className="grid lg:grid-cols-5 gap-12 sm:gap-16 w-full">
             <div className="lg:col-span-3 space-y-6 sm:space-y-8">
               <div className="space-y-3 sm:space-y-2">
-                <div className="text-sm text-muted-foreground font-mono tracking-wider">PORTFOLIO / 2026</div>
+                <div className="flex items-center gap-4 text-sm text-muted-foreground font-mono tracking-wider">
+                  <span>PORTFOLIO / 2026</span>
+                  <span className="text-muted-foreground/30">·</span>
+                  <Link href="/blog" className="text-theme-accent hover:text-foreground transition-colors duration-300">BLOG</Link>
+                </div>
                 <h1 className="text-5xl sm:text-6xl lg:text-7xl font-light tracking-tight">
                   Aryan
                   <br />
@@ -70,15 +74,15 @@ export default function Home() {
               <div className="space-y-6 max-w-md">
                 <p className="text-lg sm:text-xl text-muted-foreground leading-relaxed">
                   Full Stack Developer working across{" "}
-                  <span className="text-foreground">Kubernetes</span>,{" "}
-                  <span className="text-foreground">Go</span>,{" "}
-                  <span className="text-foreground">AWS</span>, and{" "}
-                  <span className="text-foreground">distributed systems</span>.
+                  <span className="text-theme-accent">Kubernetes</span>,{" "}
+                  <span className="text-theme-accent">Go</span>,{" "}
+                  <span className="text-theme-accent">AWS</span>, and{" "}
+                  <span className="text-theme-accent">distributed systems</span>.
                 </p>
 
                 <div className="flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-4 text-sm text-muted-foreground">
                   <div className="flex items-center gap-2">
-                    <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
+                    <div className="w-2 h-2 bg-theme-green rounded-full animate-pulse"></div>
                     Available for work
                   </div>
                   <div>Mumbai, India</div>
@@ -93,7 +97,7 @@ export default function Home() {
                   {["Go", "Kubernetes", "AWS", "DevOps", "Java", "Docker", "PostgreSQL"].map((skill) => (
                     <span
                       key={skill}
-                      className="px-3 py-1 text-xs border border-border rounded-full hover:border-muted-foreground/50 transition-colors duration-300"
+                      className="px-3 py-1 text-xs border border-border rounded-full text-muted-foreground hover:text-theme-accent hover:border-theme-accent/40 transition-colors duration-300"
                     >
                       {skill}
                     </span>
@@ -112,7 +116,7 @@ export default function Home() {
           <div className="space-y-12 sm:space-y-16">
             <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4">
               <h2 className="text-3xl sm:text-4xl font-light">Interactive Terminal</h2>
-              <div className="text-sm text-muted-foreground font-mono">SSH / CLI</div>
+              <div className="text-sm text-theme-accent font-mono">SSH / CLI</div>
             </div>
 
             <MacTerminal />
@@ -127,7 +131,7 @@ export default function Home() {
           <div className="space-y-12 sm:space-y-16">
             <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4">
               <h2 className="text-3xl sm:text-4xl font-light">Selected Work</h2>
-              <div className="text-sm text-muted-foreground font-mono">2025 — 2026</div>
+              <div className="text-sm text-theme-accent font-mono">2025 — 2026</div>
             </div>
 
             <div className="space-y-8 sm:space-y-12">
@@ -153,10 +157,10 @@ export default function Home() {
               ].map((job, index) => (
                 <div
                   key={index}
-                  className="group grid lg:grid-cols-12 gap-4 sm:gap-8 py-6 sm:py-8 border-b border-border/50 hover:border-border transition-colors duration-500"
+                  className="group grid lg:grid-cols-12 gap-4 sm:gap-8 py-6 sm:py-8 border-b border-border/50 hover:border-theme-accent/30 transition-colors duration-500"
                 >
                   <div className="lg:col-span-3">
-                    <div className="text-xl sm:text-2xl font-light text-muted-foreground group-hover:text-foreground transition-colors duration-500">
+                    <div className="text-xl sm:text-2xl font-light text-theme-accent group-hover:text-foreground transition-colors duration-500">
                       {job.year}
                     </div>
                   </div>
@@ -173,7 +177,7 @@ export default function Home() {
                     {job.tech.map((tech) => (
                       <span
                         key={tech}
-                        className="px-2 py-1 text-xs text-muted-foreground rounded group-hover:border-muted-foreground/50 transition-colors duration-500"
+                        className="px-2 py-1 text-xs text-muted-foreground rounded group-hover:text-theme-accent transition-colors duration-500"
                       >
                         {tech}
                       </span>
@@ -193,7 +197,7 @@ export default function Home() {
           <div className="space-y-12 sm:space-y-16">
             <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4">
               <h2 className="text-3xl sm:text-4xl font-light">Featured Projects</h2>
-              <div className="text-sm text-muted-foreground font-mono">2026</div>
+              <div className="text-sm text-theme-accent font-mono">2026</div>
             </div>
 
             <div className="grid gap-6 sm:gap-8 lg:grid-cols-1">
@@ -234,7 +238,7 @@ export default function Home() {
               ].map((project, index) => (
                 <article
                   key={index}
-                  className="group p-6 sm:p-8 border border-border rounded-lg hover:border-muted-foreground/50 transition-all duration-500 hover:shadow-lg"
+                  className="group p-6 sm:p-8 border border-border rounded-lg hover:border-theme-accent/40 transition-all duration-500 hover:shadow-lg"
                 >
                   <div className="space-y-4">
                     <div className="flex flex-wrap items-center justify-between gap-2 text-xs text-muted-foreground font-mono">
@@ -251,7 +255,7 @@ export default function Home() {
                           href={project.url}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="text-xs font-mono text-muted-foreground hover:text-foreground underline underline-offset-4 shrink-0 transition-colors"
+                          className="text-xs font-mono text-theme-accent hover:text-foreground underline underline-offset-4 shrink-0 transition-colors"
                         >
                           GitHub ↗
                         </Link>
@@ -261,9 +265,9 @@ export default function Home() {
                     <p className="text-muted-foreground leading-relaxed">{project.description}</p>
 
                     {project.prompt && project.response && (
-                      <div className="mt-4 p-4 bg-zinc-950 border border-border/60 rounded-lg font-mono text-xs sm:text-sm space-y-2">
+                      <div className="mt-4 p-4 bg-theme-bg-darker border border-border/60 rounded-lg font-mono text-xs sm:text-sm space-y-2">
                         <div className="text-muted-foreground">
-                          <span className="text-foreground font-medium">Prompt:</span> &quot;{project.prompt}&quot;
+                          <span className="text-theme-accent font-medium">Prompt:</span> &quot;{project.prompt}&quot;
                         </div>
                         <div className="text-foreground">
                           <span className="text-muted-foreground font-medium">Response:</span> &quot;{project.response}&quot;
@@ -290,7 +294,7 @@ export default function Home() {
                 <div className="space-y-4">
                   <Link
                     href="mailto:aryan.dev.careers@gmail.com"
-                    className="group flex items-center gap-3 text-foreground hover:text-muted-foreground transition-colors duration-300"
+                    className="group flex items-center gap-3 text-theme-accent hover:text-foreground transition-colors duration-300"
                   >
                     <span className="text-base sm:text-lg">aryan.dev.careers@gmail.com</span>
                     <svg
@@ -319,10 +323,10 @@ export default function Home() {
                   <Link
                     key={social.name}
                     href={social.url}
-                    className="group p-4 border border-border rounded-lg hover:border-muted-foreground/50 transition-all duration-300 hover:shadow-sm"
+                    className="group p-4 border border-border rounded-lg hover:border-theme-accent/40 transition-all duration-300 hover:shadow-sm"
                   >
                     <div className="space-y-2">
-                      <div className="text-foreground group-hover:text-muted-foreground transition-colors duration-300">
+                      <div className="text-foreground group-hover:text-theme-accent transition-colors duration-300">
                         {social.name}
                       </div>
                       <div className="text-xs sm:text-sm text-muted-foreground truncate" title={social.handle}>

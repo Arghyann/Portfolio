@@ -109,6 +109,33 @@
   --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
   --color-sidebar-border: var(--sidebar-border);
   --color-sidebar-ring: var(--sidebar-ring);
+
+  /* Omarchy palette colors */
+  --color-theme-accent: var(--theme-accent);
+  --color-theme-red: var(--theme-red);
+  --color-theme-yellow: var(--theme-yellow);
+  --color-theme-orange: var(--theme-orange);
+  --color-theme-green: var(--theme-green);
+  --color-theme-cyan: var(--theme-cyan);
+  --color-theme-blue: var(--theme-blue);
+  --color-theme-magenta: var(--theme-magenta);
+  --color-theme-brown: var(--theme-brown);
+  --color-theme-fg: var(--theme-fg);
+  --color-theme-fg-dark: var(--theme-fg-dark);
+  --color-theme-fg-light: var(--theme-fg-light);
+  --color-theme-fg-bright: var(--theme-fg-bright);
+  --color-theme-bg-lighter: var(--theme-bg-lighter);
+  --color-theme-bg-dark: var(--theme-bg-dark);
+  --color-theme-bg-darker: var(--theme-bg-darker);
+  --color-theme-muted: var(--theme-muted);
+  --color-theme-selection: var(--theme-selection);
+
+  /* Semantic blog & typography tokens */
+  --color-blog-text: var(--color-text);
+  --color-blog-bold: var(--color-text-bold);
+  --color-blog-math: var(--color-math);
+  --color-blog-code: var(--color-code);
+  --color-blog-link: var(--color-link);
 }
 
 @layer base {
@@ -117,6 +144,78 @@
   }
   body {
     @apply bg-background text-foreground;
+  }
+
+  /* Universal Semantic Typography for Blog & Content */
+  .blog-content,
+  article.blog-article {
+    color: var(--color-text, var(--foreground));
+  }
+
+  .blog-content h1,
+  .blog-content h2,
+  .blog-content h3,
+  .blog-content h4,
+  article.blog-article h1,
+  article.blog-article h2,
+  article.blog-article h3,
+  article.blog-article h4 {
+    color: var(--color-text-bold, var(--theme-fg-bright, var(--foreground)));
+  }
+
+  .blog-content strong,
+  .blog-content b,
+  article strong,
+  article b {
+    color: var(--color-text-bold, var(--theme-fg-bright, var(--foreground)));
+    font-weight: 600;
+  }
+
+  .katex,
+  .MathJax,
+  .math,
+  .math-inline,
+  .math-block {
+    color: var(--color-math, var(--theme-yellow, #d79921));
+    font-family: var(--font-geist-mono, monospace);
+  }
+
+  .math-inline {
+    color: var(--color-math, var(--theme-yellow, #d79921));
+    font-weight: 500;
+  }
+
+  .math-block {
+    display: block;
+    text-align: center;
+    margin: 2rem 0;
+    padding: 0.75rem 0;
+    font-size: 1.15rem;
+    letter-spacing: 0.025em;
+    color: var(--color-math, var(--theme-yellow, #d79921));
+  }
+
+  .blog-content :not(pre) > code,
+  article.blog-article :not(pre) > code {
+    color: var(--color-code, var(--theme-green, #549e6a));
+    background-color: var(--theme-bg-lighter, rgba(255, 255, 255, 0.05));
+    padding: 0.15em 0.4em;
+    border-radius: 0.25rem;
+    border: 1px solid var(--border);
+    font-size: 0.9em;
+  }
+
+  .blog-content a:not([class*="text-"]),
+  article.blog-article a:not([class*="text-"]) {
+    color: var(--color-link, var(--theme-accent));
+    text-decoration: underline;
+    text-underline-offset: 4px;
+    transition: color 0.2s ease;
+  }
+
+  .blog-content a:not([class*="text-"]):hover,
+  article.blog-article a:not([class*="text-"]):hover {
+    color: var(--color-text-bold, var(--foreground));
   }
 }
 

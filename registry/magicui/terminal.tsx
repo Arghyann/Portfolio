@@ -11,7 +11,7 @@ interface TerminalProps extends React.HTMLAttributes<HTMLDivElement> {
   title?: string
 }
 
-export function Terminal({ children, className, title = "guest@macbook ~ zsh" }: TerminalProps) {
+export function Terminal({ children, className, title = "zsh" }: TerminalProps) {
   const [copied, setCopied] = useState(false)
 
   const handleCopy = async () => {
@@ -27,31 +27,27 @@ export function Terminal({ children, className, title = "guest@macbook ~ zsh" }:
   return (
     <div
       className={cn(
-        "z-10 w-full rounded-xl border border-zinc-800 bg-zinc-950 font-mono text-sm shadow-2xl overflow-hidden",
+        "w-full rounded-lg border border-border/50 bg-theme-bg-darker/60 font-mono text-sm overflow-hidden transition-colors hover:border-theme-accent/30",
         className,
       )}
     >
-      <div className="flex items-center justify-between border-b border-zinc-800/80 bg-zinc-900/90 px-4 py-3 select-none">
+      <div className="flex items-center justify-between border-b border-border/50 bg-theme-bg-darker px-4 py-2.5 select-none">
         <div className="flex items-center gap-2">
-          <div className="h-3 w-3 rounded-full bg-red-500/80 hover:bg-red-500 transition-colors" />
-          <div className="h-3 w-3 rounded-full bg-yellow-500/80 hover:bg-yellow-500 transition-colors" />
-          <div className="h-3 w-3 rounded-full bg-green-500/80 hover:bg-green-500 transition-colors" />
-        </div>
-
-        <div className="flex items-center gap-1.5 text-xs text-zinc-400 font-mono">
-          <TerminalIcon className="h-3.5 w-3.5" />
-          <span>{title}</span>
+          <TerminalIcon className="h-3.5 w-3.5 text-theme-accent" />
+          <span className="text-[10px] font-mono uppercase tracking-wider text-theme-accent font-medium">
+            {title}
+          </span>
         </div>
 
         <button
           onClick={handleCopy}
-          className="flex items-center gap-1.5 px-2.5 py-1 rounded text-xs text-zinc-400 hover:text-zinc-200 hover:bg-zinc-800/80 transition-all duration-200 cursor-pointer"
+          className="flex items-center gap-1.5 px-2 py-0.5 rounded text-xs font-mono text-muted-foreground hover:text-foreground hover:bg-theme-bg-lighter/40 transition-all duration-200 cursor-pointer"
           title="Copy command to clipboard"
         >
           {copied ? (
             <>
-              <Check className="h-3.5 w-3.5 text-green-400" />
-              <span className="text-green-400">Copied!</span>
+              <Check className="h-3.5 w-3.5 text-theme-accent" />
+              <span className="text-theme-accent">Copied!</span>
             </>
           ) : (
             <>
@@ -62,7 +58,7 @@ export function Terminal({ children, className, title = "guest@macbook ~ zsh" }:
         </button>
       </div>
 
-      <div className="p-4 sm:p-6 space-y-2 overflow-x-auto text-zinc-200 leading-relaxed">
+      <div className="p-4 sm:p-6 overflow-x-auto text-foreground leading-relaxed">
         {children}
       </div>
     </div>
@@ -133,7 +129,7 @@ export function TypingAnimation({
     <div className={cn("flex items-center gap-1.5", className)}>
       <span>{displayedText}</span>
       {started && displayedText.length < children.length && (
-        <span className="h-4 w-2 bg-emerald-400 inline-block animate-pulse" />
+        <span className="h-4 w-2 bg-theme-accent inline-block animate-pulse" />
       )}
     </div>
   )

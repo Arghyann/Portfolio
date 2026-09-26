@@ -12,10 +12,13 @@ export function MacTerminal() {
         Or.. here&apos;s a better portfolio:
       </p>
 
-      <Terminal title="zsh">
-        <TypingAnimation delay={0}>
-          $ ssh guest@aryanssh.duckdns.org
-        </TypingAnimation>
+      <Terminal title="ssh">
+        <div className="flex items-center gap-2">
+          <span className="text-theme-accent select-none">$</span>
+          <TypingAnimation delay={0}>
+            ssh guest@aryanssh.duckdns.org
+          </TypingAnimation>
+        </div>
       </Terminal>
     </div>
   )
