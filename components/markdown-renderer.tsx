@@ -17,6 +17,7 @@ function CliChatRenderer({
 }) {
   const [currentIdx, setCurrentIdx] = useState(0)
   const [activePane, setActivePane] = useState<"sidebar" | "messages">("sidebar")
+  const [cursorLine, setCursorLine] = useState(0)
   const [copied, setCopied] = useState(false)
   const containerRef = React.useRef<HTMLDivElement>(null)
   const messageAreaRef = React.useRef<HTMLDivElement>(null)
@@ -31,6 +32,27 @@ function CliChatRenderer({
   const total = sections.length
   const safeIdx = currentIdx < total ? currentIdx : 0
   const activeContent = sections[safeIdx]
+
+  const lines = activeContent
+    .split("\n")
+    .map((l) => l.trim())
+    .filter(Boolean)
+  const totalLines = lines.length
+
+  // Ensure cursorLine is clamped when sections change
+  React.useEffect(() => {
+    setCursorLine(0)
+  }, [safeIdx])
+
+  // Scroll into view when cursor changes
+  React.useEffect(() => {
+    if (activePane === "messages" && messageAreaRef.current) {
+      const activeEl = messageAreaRef.current.querySelector('[data-active="true"]')
+      if (activeEl) {
+        activeEl.scrollIntoView({ block: "nearest" })
+      }
+    }
+  }, [cursorLine, activePane])
 
   // Reset scroll to top when changing sessions
   React.useEffect(() => {
@@ -81,14 +103,14 @@ function CliChatRenderer({
         if (activePane === "sidebar") {
           setCurrentIdx((prev) => (prev + 1) % total)
         } else {
-          messageAreaRef.current?.scrollBy({ top: 50, behavior: "smooth" })
+          setCursorLine((prev) => Math.min(prev + 1, Math.max(0, totalLines - 1)))
         }
       } else if (e.key === "ArrowUp" || e.key === "k") {
         e.preventDefault()
         if (activePane === "sidebar") {
           setCurrentIdx((prev) => (prev - 1 + total) % total)
         } else {
-          messageAreaRef.current?.scrollBy({ top: -50, behavior: "smooth" })
+          setCursorLine((prev) => Math.max(prev - 1, 0))
         }
       } else if (e.key >= "1" && e.key <= String(Math.min(total, 9))) {
         e.preventDefault()
@@ -98,9 +120,7 @@ function CliChatRenderer({
 
     window.addEventListener("keydown", handleGlobalKeyDown)
     return () => window.removeEventListener("keydown", handleGlobalKeyDown)
-  }, [total, activePane])
-
-  const lines = activeContent.split("\n")
+  }, [total, activePane, totalLines])
 
   return (
     <div
@@ -117,10 +137,6 @@ function CliChatRenderer({
             [{activePane === "sidebar" ? "sidebar" : "messages"}]
           </span>
         </div>
-        <div className="flex items-center gap-2 text-[11px] font-normal">
-          <span className="inline-block w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
-          <span>Online</span>
-        </div>
       </div>
 
       {/* Main TUI Body: Constant Fixed Height with Hidden Scrollbars */}
@@ -132,8 +148,7 @@ function CliChatRenderer({
             className="sm:w-44 border-b sm:border-b-0 sm:border-r border-border/60 bg-theme-bg-darker/90 p-2 flex sm:flex-col gap-1 overflow-x-auto sm:overflow-y-auto shrink-0 select-none no-scrollbar"
           >
             {sections.map((_, idx) => {
-              const isActive = idx === safeIdx
-              const label = `session ${String(idx + 1).padStart(2, "0")}`
+              const label = `chat ${idx + 1}`
 
               return (
                 <button
@@ -144,135 +159,112 @@ function CliChatRenderer({
                     setActivePane("sidebar")
                   }}
                   className={`w-full text-left px-2.5 py-1 text-xs font-mono transition-colors cursor-pointer flex items-center justify-between shrink-0 ${
-                    isActive
+                    idx === safeIdx && activePane === "sidebar"
                       ? "bg-foreground text-background font-bold shadow-sm"
+                      : idx === safeIdx
+                      ? "text-foreground font-medium"
                       : "text-muted-foreground hover:text-foreground hover:bg-theme-bg-lighter/40"
                   }`}
                 >
                   <span>{label}</span>
-                  <span className="text-[10px] opacity-60">[{idx + 1}]</span>
                 </button>
               )
             })}
           </div>
         )}
 
-        {/* Right Area: Messages + Bottom Input Prompt with Vim Cursor */}
+        {/* Right Area: Messages */}
         <div className="flex-1 flex flex-col bg-theme-bg-darker/40 min-w-0">
           <div
             ref={messageAreaRef}
             onClick={() => setActivePane("messages")}
-            className="flex-1 p-4 sm:p-5 space-y-2.5 overflow-y-auto leading-relaxed no-scrollbar cursor-text"
+            className="flex-1 py-4 sm:py-5 px-2 sm:px-3 overflow-y-auto leading-relaxed no-scrollbar cursor-text"
           >
             {lines.map((line, idx) => {
-              const trimmed = line.trim()
-              if (!trimmed) {
-                return <div key={idx} className="h-2" />
-              }
+              const isCursor = activePane === "messages" && idx === cursorLine
 
-              if (trimmed.startsWith("[") && trimmed.endsWith("]")) {
-                return (
-                  <div
-                    key={idx}
-                    className="py-1 text-xs text-muted-foreground/75 italic select-none"
-                  >
-                    {trimmed}
-                  </div>
-                )
-              }
+              let content: React.ReactNode = null
 
-              const userMatch = /^(?:> ?)?you:\s*(.*)/i.exec(trimmed)
-              if (userMatch) {
-                return (
-                  <div key={idx} className="text-foreground">
-                    <span className="text-theme-accent font-semibold">You: </span>
-                    <span className="text-theme-fg-bright font-medium">{userMatch[1]}</span>
-                  </div>
+              if (line.startsWith("[") && line.endsWith("]")) {
+                const text = line
+                content = (
+                  <span className="text-xs text-muted-foreground/75 italic select-none">
+                    {isCursor && text.length > 0 ? (
+                      <>{text.slice(0, -1)}<span className="bg-muted-foreground text-background animate-pulse">{text.slice(-1)}</span></>
+                    ) : isCursor && text.length === 0 ? (
+                      <span className="inline-block w-2 h-3.5 bg-muted-foreground animate-pulse align-middle -mt-0.5" />
+                    ) : (
+                      text
+                    )}
+                  </span>
                 )
-              }
-
-              const botMatch = /^(Aryan(?:\s*\([^)]+\))?|qwen(?:\s*\([^)]+\))?|bot|assistant):\s*(.*)/i.exec(
-                trimmed
-              )
-              if (botMatch) {
-                return (
-                  <div key={idx} className="text-foreground">
-                    <span className="text-theme-yellow font-semibold">{botMatch[1]}: </span>
-                    <span className="text-foreground/90">{botMatch[2]}</span>
-                  </div>
-                )
+              } else {
+                const userMatch = /^(?:> ?)?you:\s*(.*)/i.exec(line)
+                if (userMatch) {
+                  const msg = userMatch[1]
+                  content = (
+                    <>
+                      <span className="text-theme-accent font-semibold">You: </span>
+                      <span className="text-theme-fg-bright font-medium">
+                        {isCursor && msg.length > 0 ? (
+                          <>{msg.slice(0, -1)}<span className="bg-theme-fg-bright text-background animate-pulse">{msg.slice(-1)}</span></>
+                        ) : isCursor && msg.length === 0 ? (
+                          <span className="inline-block w-2 h-3.5 bg-theme-fg-bright animate-pulse align-middle -mt-0.5" />
+                        ) : (
+                          msg
+                        )}
+                      </span>
+                    </>
+                  )
+                } else {
+                  const botMatch = /^(Aryan(?:\s*\([^)]+\))?|qwen(?:\s*\([^)]+\))?|bot|assistant):\s*(.*)/i.exec(line)
+                  if (botMatch) {
+                    const msg = botMatch[2]
+                    content = (
+                      <>
+                        <span className="text-theme-yellow font-semibold">{botMatch[1]}: </span>
+                        <span className="text-foreground/90">
+                          {isCursor && msg.length > 0 ? (
+                            <>{msg.slice(0, -1)}<span className="bg-foreground text-background animate-pulse">{msg.slice(-1)}</span></>
+                          ) : isCursor && msg.length === 0 ? (
+                            <span className="inline-block w-2 h-3.5 bg-foreground animate-pulse align-middle -mt-0.5" />
+                          ) : (
+                            msg
+                          )}
+                        </span>
+                      </>
+                    )
+                  } else {
+                    const msg = line
+                    content = (
+                      <span className="text-foreground/90">
+                        {isCursor && msg.length > 0 ? (
+                          <>{msg.slice(0, -1)}<span className="bg-foreground text-background animate-pulse">{msg.slice(-1)}</span></>
+                        ) : isCursor && msg.length === 0 ? (
+                          <span className="inline-block w-2 h-3.5 bg-foreground animate-pulse align-middle -mt-0.5" />
+                        ) : (
+                          msg
+                        )}
+                      </span>
+                    )
+                  }
+                }
               }
 
               return (
-                <div key={idx} className="text-foreground/90">
-                  {trimmed}
+                <div
+                  key={idx}
+                  data-active={isCursor}
+                  className={`px-2 py-0.5 rounded-sm transition-colors ${
+                    isCursor ? "bg-theme-bg-lighter/30" : ""
+                  }`}
+                >
+                  {content}
                 </div>
               )
             })}
           </div>
-
-          {/* Prompt line with Vim Cursor in message pane */}
-          <div
-            onClick={() => setActivePane("messages")}
-            className="border-t border-border/50 bg-theme-bg-darker/80 px-3 py-1.5 font-mono text-xs flex items-center select-none gap-2"
-          >
-            <span className="text-theme-accent font-bold">&gt;</span>
-            {activePane === "messages" ? (
-              <span className="flex items-center text-foreground font-mono text-xs">
-                <span>chat buffer</span>
-                <span className="inline-block w-2 h-3.5 bg-foreground animate-pulse ml-1.5 align-middle" />
-              </span>
-            ) : (
-              <span className="text-[11px] text-muted-foreground/70">
-                press &apos;l&apos; to enter chat buffer
-              </span>
-            )}
-            <span className="text-[10px] text-muted-foreground/50 ml-auto">
-              {safeIdx + 1}/{total}
-            </span>
-          </div>
         </div>
-      </div>
-
-      {/* Bottom Status / Keybind Bar */}
-      <div className="border-t border-border/60 bg-theme-bg-darker px-3 py-1.5 font-mono text-[11px] text-muted-foreground flex items-center justify-between select-none gap-2 flex-wrap">
-        <div className="flex items-center gap-2.5">
-          <span className="text-theme-accent font-bold tracking-wider">
-            [VIM: {activePane.toUpperCase()}]
-          </span>
-          <span>
-            <kbd className="text-foreground font-semibold">h</kbd>/
-            <kbd className="text-foreground font-semibold">l</kbd> switch pane
-          </span>
-          <span className="hidden sm:inline text-muted-foreground/40">|</span>
-          <span className="hidden sm:inline">
-            <kbd className="text-foreground font-semibold">j</kbd>/
-            <kbd className="text-foreground font-semibold">k</kbd>{" "}
-            {activePane === "sidebar" ? "navigate" : "scroll"}
-          </span>
-          <span className="hidden md:inline text-muted-foreground/40">|</span>
-          <span className="hidden md:inline">
-            <kbd className="text-foreground font-semibold">Tab</kbd> toggle
-          </span>
-        </div>
-
-        <button
-          onClick={handleCopy}
-          className="flex items-center gap-1.5 hover:text-foreground text-muted-foreground transition-colors cursor-pointer ml-auto"
-          title="Copy conversation"
-        >
-          {copied ? (
-            <>
-              <Check className="h-3 w-3 text-theme-accent" />
-              <span className="text-theme-accent">Copied</span>
-            </>
-          ) : (
-            <>
-              <Copy className="h-3 w-3" />
-              <span>Copy</span>
-            </>
-          )}
-        </button>
       </div>
     </div>
   )
