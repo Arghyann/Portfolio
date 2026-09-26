@@ -16,6 +16,7 @@ function CliChatRenderer({
   value: string
 }) {
   const [currentIdx, setCurrentIdx] = useState(0)
+  const [activePane, setActivePane] = useState<"sidebar" | "messages">("sidebar")
   const [copied, setCopied] = useState(false)
   const containerRef = React.useRef<HTMLDivElement>(null)
   const messageAreaRef = React.useRef<HTMLDivElement>(null)
@@ -57,12 +58,29 @@ function CliChatRenderer({
   }
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
-    if (e.key === "ArrowDown" || e.key === "j" || e.key === "Tab") {
+    if (e.key === "l" || e.key === "ArrowRight") {
       e.preventDefault()
-      goNext()
+      setActivePane("messages")
+    } else if (e.key === "h" || e.key === "ArrowLeft") {
+      e.preventDefault()
+      setActivePane("sidebar")
+    } else if (e.key === "Tab") {
+      e.preventDefault()
+      setActivePane((prev) => (prev === "sidebar" ? "messages" : "sidebar"))
+    } else if (e.key === "ArrowDown" || e.key === "j") {
+      e.preventDefault()
+      if (activePane === "sidebar") {
+        goNext()
+      } else {
+        messageAreaRef.current?.scrollBy({ top: 48, behavior: "smooth" })
+      }
     } else if (e.key === "ArrowUp" || e.key === "k") {
       e.preventDefault()
-      goPrev()
+      if (activePane === "sidebar") {
+        goPrev()
+      } else {
+        messageAreaRef.current?.scrollBy({ top: -48, behavior: "smooth" })
+      }
     } else if (e.key >= "1" && e.key <= String(Math.min(total, 9))) {
       e.preventDefault()
       setCurrentIdx(Number(e.key) - 1)
@@ -77,39 +95,55 @@ function CliChatRenderer({
       tabIndex={0}
       onKeyDown={handleKeyDown}
       className="my-8 rounded border border-border bg-theme-bg-darker overflow-hidden font-mono text-sm shadow-xl focus:outline-none focus:ring-1 focus:ring-theme-accent/60 transition-all select-text"
-      title="Click to focus, then use j/k or arrow keys to navigate chats"
+      title="Click to focus: use 'h'/'l' to switch pane, 'j'/'k' to navigate/scroll"
     >
       {/* Top Header Bar - Inverted nchat style */}
       <div className="bg-foreground text-background px-3 py-1 font-mono text-xs font-semibold flex items-center justify-between select-none">
-        <span className="tracking-wide uppercase">{title || "nchat"}</span>
+        <div className="flex items-center gap-2">
+          <span className="tracking-wide uppercase">{title || "nchat"}</span>
+          <span className="text-[10px] opacity-75 font-normal">
+            [{activePane === "sidebar" ? "sidebar" : "messages"}]
+          </span>
+        </div>
         <div className="flex items-center gap-2 text-[11px] font-normal">
           <span className="inline-block w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
           <span>Online</span>
         </div>
       </div>
 
-      {/* Main TUI Body: Constant Fixed Height */}
+      {/* Main TUI Body: Constant Fixed Height with Hidden Scrollbars */}
       <div className="flex flex-col sm:flex-row h-[360px] sm:h-[400px]">
         {/* Sidebar */}
         {total > 1 && (
           <div
-            className="sm:w-44 border-b sm:border-b-0 sm:border-r border-border/60 bg-theme-bg-darker/90 p-2 flex sm:flex-col gap-1 overflow-x-auto sm:overflow-y-auto shrink-0 select-none"
-            style={{ scrollbarWidth: "thin" }}
+            onClick={() => setActivePane("sidebar")}
+            className="sm:w-44 border-b sm:border-b-0 sm:border-r border-border/60 bg-theme-bg-darker/90 p-2 flex sm:flex-col gap-1 overflow-x-auto sm:overflow-y-auto shrink-0 select-none no-scrollbar cursor-pointer"
           >
             {sections.map((_, idx) => {
               const isActive = idx === safeIdx
               const label = `session ${String(idx + 1).padStart(2, "0")}`
+              const isCursorHere = isActive && activePane === "sidebar"
+
               return (
                 <button
                   key={idx}
-                  onClick={() => setCurrentIdx(idx)}
+                  onClick={(e) => {
+                    e.stopPropagation()
+                    setCurrentIdx(idx)
+                    setActivePane("sidebar")
+                  }}
                   className={`w-full text-left px-2.5 py-1 text-xs font-mono transition-colors cursor-pointer flex items-center justify-between shrink-0 ${
                     isActive
                       ? "bg-foreground text-background font-bold shadow-sm"
                       : "text-muted-foreground hover:text-foreground hover:bg-theme-bg-lighter/40"
                   }`}
                 >
-                  <span>{label}</span>
+                  <span className="flex items-center">
+                    {label}
+                    {isCursorHere && (
+                      <span className="inline-block w-1.5 h-3.5 bg-background animate-pulse ml-1.5" />
+                    )}
+                  </span>
                   <span className="text-[10px] opacity-60">[{idx + 1}]</span>
                 </button>
               )
@@ -117,11 +151,11 @@ function CliChatRenderer({
           </div>
         )}
 
-        {/* Message Area - Scrollable with Constant Height */}
+        {/* Message Area - Scrollable with No Scrollbars */}
         <div
           ref={messageAreaRef}
-          className="flex-1 p-4 sm:p-5 space-y-2.5 bg-theme-bg-darker/40 overflow-y-auto leading-relaxed"
-          style={{ scrollbarWidth: "thin" }}
+          onClick={() => setActivePane("messages")}
+          className="flex-1 p-4 sm:p-5 space-y-2.5 bg-theme-bg-darker/40 overflow-y-auto leading-relaxed no-scrollbar cursor-text"
         >
           {lines.map((line, idx) => {
             const trimmed = line.trim()
@@ -168,25 +202,34 @@ function CliChatRenderer({
               </div>
             )
           })}
+          {activePane === "messages" && (
+            <div className="pt-2 text-muted-foreground/60 select-none flex items-center gap-1 text-xs">
+              <span>-- END OF CHAT --</span>
+              <span className="inline-block w-2 h-3.5 bg-foreground animate-pulse" />
+            </div>
+          )}
         </div>
       </div>
 
-      {/* Bottom Status / Keybind Bar (nchat / nano style) */}
+      {/* Bottom Status / Keybind Bar with Vim Mode & Cursor */}
       <div className="border-t border-border/60 bg-theme-bg-darker px-3 py-1.5 font-mono text-[11px] text-muted-foreground flex items-center justify-between select-none gap-2 flex-wrap">
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-2.5">
+          <span className="text-theme-accent font-bold tracking-wider">
+            [VIM: {activePane.toUpperCase()}]
+          </span>
           <span>
-            <kbd className="text-foreground font-semibold">j</kbd>/
-            <kbd className="text-foreground font-semibold">k</kbd> or{" "}
-            <kbd className="text-foreground font-semibold">↑</kbd>/
-            <kbd className="text-foreground font-semibold">↓</kbd> Navigate
+            <kbd className="text-foreground font-semibold">h</kbd>/
+            <kbd className="text-foreground font-semibold">l</kbd> switch pane
           </span>
           <span className="hidden sm:inline text-muted-foreground/40">|</span>
           <span className="hidden sm:inline">
-            <kbd className="text-foreground font-semibold">Tab</kbd> NextChat
+            <kbd className="text-foreground font-semibold">j</kbd>/
+            <kbd className="text-foreground font-semibold">k</kbd>{" "}
+            {activePane === "sidebar" ? "navigate" : "scroll"}
           </span>
           <span className="hidden md:inline text-muted-foreground/40">|</span>
           <span className="hidden md:inline">
-            <kbd className="text-foreground font-semibold">1-{Math.min(total, 9)}</kbd> Switch
+            <kbd className="text-foreground font-semibold">Tab</kbd> toggle
           </span>
         </div>
 
