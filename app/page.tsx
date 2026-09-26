@@ -50,6 +50,13 @@ export default function Home() {
         </div>
       </nav>
 
+      <Link
+        href="/blog"
+        className="fixed right-6 top-6 z-20 font-mono text-xs tracking-widest text-muted-foreground transition-colors hover:text-foreground sm:right-10"
+      >
+        WRITING ↗
+      </Link>
+
       <main className="max-w-4xl mx-auto px-6 sm:px-8 lg:px-16">
         <header
           id="intro"
