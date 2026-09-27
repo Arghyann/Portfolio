@@ -145,7 +145,7 @@ function CliChatRenderer({
         {total > 1 && (
           <div
             onClick={() => setActivePane("sidebar")}
-            className="sm:w-44 border-b sm:border-b-0 sm:border-r border-border/60 bg-theme-bg-darker/90 p-2 flex sm:flex-col gap-1 overflow-x-auto sm:overflow-y-auto shrink-0 select-none no-scrollbar"
+            className="sm:w-44 border-b sm:border-b-0 sm:border-r border-border/60 bg-theme-bg-darker/90 p-2 flex sm:flex-col gap-2 sm:gap-1 overflow-x-auto sm:overflow-y-auto shrink-0 select-none no-scrollbar"
           >
             {sections.map((_, idx) => {
               const label = `chat ${idx + 1}`
@@ -158,7 +158,7 @@ function CliChatRenderer({
                     setCurrentIdx(idx)
                     setActivePane("sidebar")
                   }}
-                  className={`w-full text-left px-2.5 py-1 text-xs font-mono transition-colors cursor-pointer flex items-center justify-between shrink-0 ${
+                  className={`whitespace-nowrap sm:w-full text-left px-2.5 py-1 text-xs font-mono transition-colors cursor-pointer flex items-center justify-between shrink-0 rounded-sm ${
                     idx === safeIdx && activePane === "sidebar"
                       ? "bg-foreground text-background font-bold shadow-sm"
                       : idx === safeIdx
@@ -174,11 +174,11 @@ function CliChatRenderer({
         )}
 
         {/* Right Area: Messages */}
-        <div className="flex-1 flex flex-col bg-theme-bg-darker/40 min-w-0">
+        <div className="flex-1 flex flex-col bg-theme-bg-darker/40 min-w-0 min-h-0">
           <div
             ref={messageAreaRef}
             onClick={() => setActivePane("messages")}
-            className="flex-1 py-4 sm:py-5 px-2 sm:px-3 overflow-y-auto leading-relaxed no-scrollbar cursor-text"
+            className="flex-1 py-4 sm:py-5 px-2 sm:px-3 overflow-y-auto leading-relaxed no-scrollbar cursor-text break-words whitespace-pre-wrap min-h-0 touch-pan-y"
           >
             {lines.map((line, idx) => {
               const isCursor = activePane === "messages" && idx === cursorLine
