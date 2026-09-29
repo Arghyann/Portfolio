@@ -9,7 +9,7 @@ export function MacTerminal() {
   return (
     <div className="space-y-6">
       <p className="text-lg sm:text-xl text-muted-foreground leading-relaxed">
-        Or.. here&apos;s a better portfolio:
+        Or.. here&apos;s something better!:
       </p>
 
       <Terminal title="ssh">
