@@ -48,7 +48,7 @@ export function TopNav() {
   }, [router, pathname])
 
   return (
-    <nav className="flex items-center gap-4 sm:gap-6 text-xs sm:text-[13px] font-mono text-muted mb-12 sm:mb-16 select-none">
+    <nav className="flex items-center gap-6 sm:gap-8 text-xs sm:text-[13px] font-mono text-muted mb-12 sm:mb-16 select-none">
       <Link
         href="/"
         className="hover:text-foreground transition-colors group flex items-center gap-1.5 no-underline"
