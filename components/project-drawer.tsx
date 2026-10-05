@@ -33,14 +33,14 @@ export function ProjectItem({ project }: ProjectItemProps) {
           className="w-full text-left -mx-3 flex flex-col rounded-lg px-3 py-2.5 sm:py-3 transition-colors hover:bg-surface-hover group cursor-pointer focus:outline-none focus-visible:ring-1 focus-visible:ring-accent"
         >
           <div className="flex items-center justify-between w-full">
-            <span className="font-medium text-foreground group-hover:text-accent transition-colors">
+            <span className="font-medium text-foreground text-base sm:text-[17px] group-hover:text-accent transition-colors">
               {project.title}
             </span>
-            <span className="text-xs text-muted/80 font-mono group-hover:text-foreground transition-colors">
+            <span className="text-xs sm:text-sm text-muted/80 font-mono group-hover:text-foreground transition-colors">
               {project.period}
             </span>
           </div>
-          <span className="text-muted text-sm mt-0.5 leading-relaxed">
+          <span className="text-muted text-sm sm:text-[15px] mt-0.5 leading-relaxed">
             {project.subtitle}
           </span>
         </button>

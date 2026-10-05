@@ -73,13 +73,15 @@ export default function HomePage() {
 
       {/* Top Header */}
       <header className="mb-14 sm:mb-20 flex flex-col items-start">
-        <Link
-          href="/"
-          className="font-medium text-base sm:text-[17px] text-foreground hover:text-accent transition-colors no-underline"
-        >
-          Aryan Mane
-        </Link>
-        <span className="text-muted text-sm sm:text-[15px] font-normal mt-0.5">
+        <h1 className="text-2xl sm:text-3xl font-medium tracking-tight">
+          <Link
+            href="/"
+            className="text-foreground hover:text-accent transition-colors no-underline"
+          >
+            Aryan Mane
+          </Link>
+        </h1>
+        <span className="text-muted text-sm sm:text-base font-normal mt-1">
           Full Stack Developer
         </span>
       </header>
@@ -87,9 +89,9 @@ export default function HomePage() {
       <main className="space-y-12 sm:space-y-16">
         {/* Today / About */}
         <section id="today">
-          <span className="mb-4 block font-medium text-foreground text-sm sm:text-base">
+          <h2 className="mb-4 block font-medium text-foreground text-xl sm:text-2xl tracking-tight">
             Today
-          </span>
+          </h2>
           <div className="space-y-4 text-muted text-sm sm:text-[15px] leading-[1.6]">
             <p>
               I work on distributed systems, backend infrastructure, and cloud-native services across{" "}
@@ -113,10 +115,10 @@ export default function HomePage() {
         {/* Work */}
         <section id="work">
           <div className="flex items-baseline justify-between mb-4">
-            <span className="font-medium text-foreground text-sm sm:text-base">
+            <h2 className="font-medium text-foreground text-xl sm:text-2xl tracking-tight">
               Work
-            </span>
-            <span className="text-xs text-muted/70 font-mono">
+            </h2>
+            <span className="text-xs sm:text-[13px] text-muted/70 font-mono">
               Experience &amp; Roles
             </span>
           </div>
@@ -130,19 +132,19 @@ export default function HomePage() {
               className="-mx-3 flex flex-col rounded-lg px-3 py-2.5 sm:py-3 transition-colors hover:bg-surface-hover group cursor-pointer no-underline focus:outline-none focus-visible:ring-1 focus-visible:ring-accent"
             >
               <div className="flex items-center justify-between w-full">
-                <span className="font-medium text-foreground group-hover:text-accent transition-colors inline-flex items-center gap-1.5">
+                <span className="font-medium text-foreground text-base sm:text-[17px] group-hover:text-accent transition-colors inline-flex items-center gap-1.5">
                   <span>Signalmint</span>
-                  <ArrowUpRight className="w-3.5 h-3.5 text-muted/70 group-hover:text-accent group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-all shrink-0" />
+                  <ArrowUpRight className="w-4 h-4 text-muted/70 group-hover:text-accent group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-all shrink-0" />
                 </span>
-                <span className="text-xs text-muted/80 font-mono group-hover:text-foreground transition-colors">
+                <span className="text-xs sm:text-sm text-muted/80 font-mono group-hover:text-foreground transition-colors">
                   Nov 2025 - Apr 2026
                 </span>
               </div>
-              <div className="text-xs text-muted font-mono mt-0.5">
+              <div className="text-xs sm:text-sm text-muted font-mono mt-0.5">
                 Full Stack Developer · Valnee Solutions
               </div>
-              <p className="text-muted text-sm sm:text-[15px] leading-[1.6] pt-1">
-                Built and maintained an ad analysis pipeline that would scrape ads from the Meta Ad Library rank and compare competitor ads using Redis as a messaging queue and asynchronous Celery workers.
+              <p className="text-muted text-sm sm:text-[15px] leading-relaxed pt-1">
+                Built and maintained an ad analysis pipeline that would scrape ads from the Meta Ad Library, rank them and compare competitor ads using Redis as a messaging queue and asynchronous Celery workers.
               </p>
             </Link>
 
@@ -154,18 +156,18 @@ export default function HomePage() {
               className="-mx-3 flex flex-col rounded-lg px-3 py-2.5 sm:py-3 transition-colors hover:bg-surface-hover group cursor-pointer no-underline focus:outline-none focus-visible:ring-1 focus-visible:ring-accent"
             >
               <div className="flex items-center justify-between w-full">
-                <span className="font-medium text-foreground group-hover:text-accent transition-colors inline-flex items-center gap-1.5">
+                <span className="font-medium text-foreground text-base sm:text-[17px] group-hover:text-accent transition-colors inline-flex items-center gap-1.5">
                   <span>Thyne Jewels</span>
-                  <ArrowUpRight className="w-3.5 h-3.5 text-muted/70 group-hover:text-accent group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-all shrink-0" />
+                  <ArrowUpRight className="w-4 h-4 text-muted/70 group-hover:text-accent group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-all shrink-0" />
                 </span>
-                <span className="text-xs text-muted/80 font-mono group-hover:text-foreground transition-colors">
+                <span className="text-xs sm:text-sm text-muted/80 font-mono group-hover:text-foreground transition-colors">
                   Feb 2026 - July 2026
                 </span>
               </div>
-              <div className="text-xs text-muted font-mono mt-0.5">
+              <div className="text-xs sm:text-sm text-muted font-mono mt-0.5">
                 Full Stack Developer · Valnee Solutions
               </div>
-              <p className="text-muted text-sm sm:text-[15px] leading-[1.6] pt-1">
+              <p className="text-muted text-sm sm:text-[15px] leading-relaxed pt-1">
                 Built a Full stack Flutter Application with a Go backend for an E-commerce Jewellery Application. Handled deployment across the Play Store, App Store and AWS. Restructured infrastructure to cut client's cloud costs by 30%.
               </p>
             </Link>
@@ -178,18 +180,18 @@ export default function HomePage() {
               className="-mx-3 flex flex-col rounded-lg px-3 py-2.5 sm:py-3 transition-colors hover:bg-surface-hover group cursor-pointer no-underline focus:outline-none focus-visible:ring-1 focus-visible:ring-accent"
             >
               <div className="flex items-center justify-between w-full">
-                <span className="font-medium text-foreground group-hover:text-accent transition-colors inline-flex items-center gap-1.5">
+                <span className="font-medium text-foreground text-base sm:text-[17px] group-hover:text-accent transition-colors inline-flex items-center gap-1.5">
                   <span>Reach Saga</span>
-                  <ArrowUpRight className="w-3.5 h-3.5 text-muted/70 group-hover:text-accent group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-all shrink-0" />
+                  <ArrowUpRight className="w-4 h-4 text-muted/70 group-hover:text-accent group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-all shrink-0" />
                 </span>
-                <span className="text-xs text-muted/80 font-mono group-hover:text-foreground transition-colors">
+                <span className="text-xs sm:text-sm text-muted/80 font-mono group-hover:text-foreground transition-colors">
                   June 2026 - August 2026
                 </span>
               </div>
-              <div className="text-xs text-muted font-mono mt-0.5">
+              <div className="text-xs sm:text-sm text-muted font-mono mt-0.5">
                 Full Stack Developer · Valnee Solutions
               </div>
-              <p className="text-muted text-sm sm:text-[15px] leading-[1.6] pt-1">
+              <p className="text-muted text-sm sm:text-[15px] leading-relaxed pt-1">
                 Built an AI Video Generation and Editing Pipeline to for SEO optimised Articles. Designed AI pipelines to analyse Keywords for SEO first content.
               </p>
             </Link>
@@ -202,10 +204,10 @@ export default function HomePage() {
         {/* Projects */}
         <section id="projects">
           <div className="flex items-baseline justify-between mb-4">
-            <span className="font-medium text-foreground text-sm sm:text-base">
+            <h2 className="font-medium text-foreground text-xl sm:text-2xl tracking-tight">
               Projects
-            </span>
-            <span className="text-xs text-muted/70 font-mono">
+            </h2>
+            <span className="text-xs sm:text-[13px] text-muted/70 font-mono">
               Click for architecture &amp; details
             </span>
           </div>
@@ -222,9 +224,9 @@ export default function HomePage() {
 
         {/* More / Connect */}
         <section id="connect">
-          <span className="mb-4 block font-medium text-foreground text-sm sm:text-base">
+          <h2 className="mb-4 block font-medium text-foreground text-xl sm:text-2xl tracking-tight">
             More
-          </span>
+          </h2>
           <p className="text-muted text-sm sm:text-[15px] leading-[1.6]">
             You can see more of my code on{" "}
             <Link

@@ -28,7 +28,7 @@ export default async function BlogIndexPage() {
 
       <main className="space-y-12">
         <div>
-          <h1 className="text-xl sm:text-2xl font-medium tracking-tight text-foreground">
+          <h1 className="text-2xl sm:text-3xl font-medium tracking-tight text-foreground">
             Writing
           </h1>
           <p className="text-muted text-sm sm:text-base mt-2 leading-[1.6]">
