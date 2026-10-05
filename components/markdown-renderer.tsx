@@ -236,32 +236,36 @@ export function MarkdownRenderer({ content }: { content: string }) {
   const formattedContent = preprocessMath(content)
 
   return (
-    <div className="blog-content space-y-5 text-foreground/90 text-[15px] sm:text-base leading-[1.8] font-normal">
+    <div className="blog-content space-y-7 sm:space-y-9 text-foreground/90 text-[15px] sm:text-[16.5px] leading-[1.85] font-normal">
       <ReactMarkdown
         remarkPlugins={[remarkGfm, remarkMath]}
         rehypePlugins={[rehypeKatex]}
         components={{
           h1: ({ children }) => (
-            <h1 className="text-2xl sm:text-3xl font-medium tracking-tight text-foreground pt-8 pb-2">
+            <h1 className="text-2xl sm:text-3xl font-medium tracking-tight text-foreground pt-10 pb-3">
               {children}
             </h1>
           ),
           h2: ({ children }) => (
-            <h2 className="text-xl sm:text-2xl font-medium tracking-tight text-foreground pt-8 pb-1">
+            <h2 className="text-xl sm:text-2xl font-medium tracking-tight text-foreground pt-10 pb-2">
               {children}
             </h2>
           ),
           h3: ({ children }) => (
-            <h3 className="text-lg sm:text-xl font-medium tracking-tight text-foreground pt-6">
+            <h3 className="text-lg sm:text-xl font-medium tracking-tight text-foreground pt-8 pb-1">
               {children}
             </h3>
           ),
           h4: ({ children }) => (
-            <h4 className="text-sm font-medium uppercase tracking-wider text-accent pt-4">
+            <h4 className="text-sm font-medium uppercase tracking-wider text-accent pt-6 pb-1">
               {children}
             </h4>
           ),
-          p: ({ children }) => <p className="leading-[1.8]">{children}</p>,
+          p: ({ children }) => (
+            <p className="mb-7 sm:mb-9 leading-[1.85] text-foreground/90">
+              {children}
+            </p>
+          ),
           strong: ({ children }) => (
             <strong className="font-semibold text-foreground">
               {children}

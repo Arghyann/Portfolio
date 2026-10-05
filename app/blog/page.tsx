@@ -15,7 +15,7 @@ export default async function BlogIndexPage() {
   const posts = await getAllPosts()
 
   return (
-    <div className="mx-auto max-w-[692px] px-6 py-12 sm:py-20 md:py-24 text-foreground antialiased selection:bg-accent selection:text-background">
+    <div className="mx-auto max-w-[820px] px-6 py-12 sm:py-20 md:py-24 text-foreground antialiased selection:bg-accent selection:text-background">
       {/* Top Bar */}
       <TopNav />
 

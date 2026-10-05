@@ -46,7 +46,7 @@ export default async function BlogPostPage({ params }: PageProps) {
   const formattedDate = formatPostDate(post.published_at)
 
   return (
-    <div className="mx-auto max-w-[692px] px-6 py-12 sm:py-20 md:py-24 text-foreground antialiased selection:bg-accent selection:text-background">
+    <div className="mx-auto max-w-[820px] px-6 py-12 sm:py-20 md:py-24 text-foreground antialiased selection:bg-accent selection:text-background">
       {/* Top Bar */}
       <TopNav />
 
@@ -67,8 +67,8 @@ export default async function BlogPostPage({ params }: PageProps) {
       </header>
 
       {/* Article */}
-      <article className="space-y-8 leading-[1.6]">
-        <div className="space-y-3 pb-6 border-b border-border">
+      <article className="space-y-10 leading-[1.85]">
+        <div className="space-y-4 pb-8 border-b border-border">
           <div className="flex items-center gap-3 text-xs font-mono text-muted/70">
             <span>{formattedDate}</span>
             <span>&middot;</span>
