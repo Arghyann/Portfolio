@@ -92,19 +92,20 @@ export default function HomePage() {
           <h2 className="mb-4 block font-medium text-foreground text-xl sm:text-2xl tracking-tight">
             Today
           </h2>
-          <div className="space-y-4 text-muted text-sm sm:text-[15px] leading-[1.6]">
+          <div className="space-y-4 text-muted text-sm sm:text-[15px] leading-[1.7]">
             <p>
-              I work on distributed systems, backend infrastructure, and cloud-native services across{" "}
+              I like to build and learn how systems work and function together. I&apos;ve built full-stack applications across{" "}
               <span className="text-foreground font-medium">Go</span>,{" "}
-              <span className="text-foreground font-medium">Kubernetes</span>, and{" "}
-              <span className="text-foreground font-medium">AWS</span>. I care about high-throughput pipelines, deterministic state, and low-latency architectures.
-            </p>
-            <p>
-              Currently engineering backend services and scalable ad analysis worker pools at{" "}
-              <span className="text-foreground font-medium">Valnee Solutions</span> in Mumbai. Previously studied Artificial Intelligence &amp; Data Science at VESIT.
-            </p>
-            <p>
-              I like building things from first principles—from handcrafting elliptic curve cryptography and P2P consensus for a toy blockchain to building concurrent LRU cache engines and fine-tuning LLMs on personal conversational datasets.
+              <span className="text-foreground font-medium">Python</span>,{" "}
+              <span className="text-foreground font-medium">Next.js</span>, and{" "}
+              <span className="text-foreground font-medium">Kubernetes</span>. I particularly enjoy learning about Operating Systems and Math. When I&apos;m done exploring things, sometimes I{" "}
+              <Link
+                href="/blog"
+                className="text-foreground underline underline-offset-4 decoration-border hover:decoration-accent hover:text-accent transition-colors"
+              >
+                write about them
+              </Link>
+              .
             </p>
           </div>
         </section>
