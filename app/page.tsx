@@ -124,34 +124,51 @@ export default function HomePage() {
             <div className="space-y-1.5">
               <div className="flex items-baseline justify-between w-full">
                 <span className="font-medium text-foreground text-sm sm:text-[15px]">
-                  Valnee Solutions
+                  Signalmint
                 </span>
                 <span className="text-xs text-muted/70 font-mono">
-                  2025 — Present
+                  Nov-2025 - Apr-2026
                 </span>
               </div>
               <div className="text-xs text-muted font-mono">
                 Full Stack Developer · Mumbai, India
               </div>
               <p className="text-muted text-sm sm:text-[15px] leading-[1.6] pt-1">
-                Engineering high-throughput backend services and distributed ad analysis worker pools. Architecting cloud-native pipelines across Go, PostgreSQL, and AWS to process concurrent streaming workloads with minimal latency.
+                Built and maintained an ad analysis pipeline that would scrape ads from the Meta Ad Library rank and compare competitor ads using Redis as a messaging queue and asynchronous Celery workers. 
               </p>
             </div>
 
             <div className="space-y-1.5">
               <div className="flex items-baseline justify-between w-full">
                 <span className="font-medium text-foreground text-sm sm:text-[15px]">
-                  VESIT
+                  Company Name
                 </span>
                 <span className="text-xs text-muted/70 font-mono">
-                  2021 — 2025
+                  2024 — 2025
                 </span>
               </div>
               <div className="text-xs text-muted font-mono">
-                B.E. in Artificial Intelligence &amp; Data Science
+                Role · Location
               </div>
               <p className="text-muted text-sm sm:text-[15px] leading-[1.6] pt-1">
-                Specialized in distributed systems, machine learning, systems architecture, and algorithmic design.
+                Description of responsibilities, technologies used, architectures designed, and projects delivered.
+              </p>
+            </div>
+
+            <div className="space-y-1.5">
+              <div className="flex items-baseline justify-between w-full">
+                <span className="font-medium text-foreground text-sm sm:text-[15px]">
+                  Company Name
+                </span>
+                <span className="text-xs text-muted/70 font-mono">
+                  2023 — 2024
+                </span>
+              </div>
+              <div className="text-xs text-muted font-mono">
+                Role · Location
+              </div>
+              <p className="text-muted text-sm sm:text-[15px] leading-[1.6] pt-1">
+                Description of responsibilities, technologies used, architectures designed, and projects delivered.
               </p>
             </div>
           </div>
