@@ -5,7 +5,7 @@ import type { Metadata } from "next"
 
 export const metadata: Metadata = {
   title: "Writing — Aryan Mane",
-  description: "Notes, writeups, and thoughts on distributed systems, AI fine-tuning, and software engineering.",
+  description: "Things I've learned, built, and found interesting enough to write about.",
 }
 
 export const revalidate = 60
@@ -32,7 +32,7 @@ export default async function BlogIndexPage() {
             Writing
           </h1>
           <p className="text-muted text-sm sm:text-base mt-2 leading-[1.6]">
-            Notes, writeups, and experiences building distributed systems, training LLMs, and systems engineering.
+            Things I&apos;ve learned, built, and found interesting enough to write about.
           </p>
         </div>
 
