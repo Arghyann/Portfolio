@@ -1,6 +1,5 @@
 import Link from "next/link"
 import { getAllPosts, formatPostDate } from "@/lib/blog"
-import { TopNav } from "@/components/top-nav"
 import { ArrowLeft } from "lucide-react"
 import type { Metadata } from "next"
 
@@ -16,24 +15,16 @@ export default async function BlogIndexPage() {
 
   return (
     <div className="mx-auto max-w-[820px] px-6 py-12 sm:py-20 md:py-24 text-foreground antialiased selection:bg-accent selection:text-background">
-      {/* Top Bar */}
-      <TopNav />
-
-      {/* Top Header */}
-      <header className="mb-14 sm:mb-20 flex items-start justify-between">
-        <div className="flex flex-col">
-          <Link
-            href="/"
-            className="font-medium text-base sm:text-[17px] text-foreground hover:text-accent transition-colors no-underline flex items-center gap-1.5"
-          >
-            <ArrowLeft className="w-3.5 h-3.5" />
-            <span>Aryan Mane</span>
-          </Link>
-          <span className="text-muted text-sm sm:text-[15px] font-normal mt-0.5">
-            Full Stack Developer
-          </span>
-        </div>
-      </header>
+      {/* Back Button */}
+      <div className="mb-10 sm:mb-14">
+        <Link
+          href="/"
+          className="inline-flex items-center gap-2 text-xs sm:text-[13px] font-mono text-muted hover:text-foreground transition-colors group no-underline"
+        >
+          <ArrowLeft className="w-3.5 h-3.5 group-hover:-translate-x-0.5 transition-transform" />
+          <span>home</span>
+        </Link>
+      </div>
 
       <main className="space-y-12">
         <div>

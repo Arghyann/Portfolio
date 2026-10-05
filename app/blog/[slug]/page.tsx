@@ -1,6 +1,5 @@
 import { getAllPosts, getPostBySlug, formatPostDate } from "@/lib/blog"
 import { MarkdownRenderer } from "@/components/markdown-renderer"
-import { TopNav } from "@/components/top-nav"
 import Link from "next/link"
 import { notFound } from "next/navigation"
 import { ArrowLeft } from "lucide-react"
@@ -47,24 +46,16 @@ export default async function BlogPostPage({ params }: PageProps) {
 
   return (
     <div className="mx-auto max-w-[820px] px-6 py-12 sm:py-20 md:py-24 text-foreground antialiased selection:bg-accent selection:text-background">
-      {/* Top Bar */}
-      <TopNav />
-
-      {/* Top Header */}
-      <header className="mb-12 sm:mb-16 flex items-start justify-between">
-        <div className="flex flex-col">
-          <Link
-            href="/"
-            className="font-medium text-base sm:text-[17px] text-foreground hover:text-accent transition-colors no-underline flex items-center gap-1.5"
-          >
-            <ArrowLeft className="w-3.5 h-3.5" />
-            <span>Aryan Mane</span>
-          </Link>
-          <span className="text-muted text-sm sm:text-[15px] font-normal mt-0.5">
-            Full Stack Developer
-          </span>
-        </div>
-      </header>
+      {/* Back Button */}
+      <div className="mb-10 sm:mb-14">
+        <Link
+          href="/blog"
+          className="inline-flex items-center gap-2 text-xs sm:text-[13px] font-mono text-muted hover:text-foreground transition-colors group no-underline"
+        >
+          <ArrowLeft className="w-3.5 h-3.5 group-hover:-translate-x-0.5 transition-transform" />
+          <span>all posts</span>
+        </Link>
+      </div>
 
       {/* Article */}
       <article className="space-y-10 leading-[1.85]">
@@ -103,11 +94,11 @@ export default async function BlogPostPage({ params }: PageProps) {
           <MarkdownRenderer content={post.body} />
         </div>
 
-        {/* Back Link */}
+        {/* Bottom Back Link */}
         <div className="pt-12 mt-12 border-t border-border flex items-center text-xs text-muted/70 font-mono">
           <Link
             href="/blog"
-            className="inline-flex items-center gap-1.5 text-foreground hover:text-accent transition-colors"
+            className="inline-flex items-center gap-1.5 text-foreground hover:text-accent transition-colors no-underline"
           >
             <ArrowLeft className="w-3.5 h-3.5" />
             <span>All posts</span>
