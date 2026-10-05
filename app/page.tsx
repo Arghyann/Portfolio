@@ -2,6 +2,7 @@ import Link from "next/link"
 import { ProjectItem, type ProjectData } from "@/components/project-drawer"
 import { CopyEmail } from "@/components/copy-email"
 import { TopNav } from "@/components/top-nav"
+import { ArrowUpRight } from "lucide-react"
 
 const projects: ProjectData[] = [
   {
@@ -120,57 +121,78 @@ export default function HomePage() {
             </span>
           </div>
 
-          <div className="space-y-6">
-            <div className="space-y-1.5">
-              <div className="flex items-baseline justify-between w-full">
-                <span className="font-medium text-foreground text-sm sm:text-[15px]">
-                  Signalmint
+          <div className="flex flex-col gap-1 sm:gap-1.5">
+            {/* Signalmint */}
+            <Link
+              href="https://signalmint.in"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="-mx-3 flex flex-col rounded-lg px-3 py-2.5 sm:py-3 transition-colors hover:bg-surface-hover group cursor-pointer no-underline focus:outline-none focus-visible:ring-1 focus-visible:ring-accent"
+            >
+              <div className="flex items-center justify-between w-full">
+                <span className="font-medium text-foreground group-hover:text-accent transition-colors inline-flex items-center gap-1.5">
+                  <span>Signalmint</span>
+                  <ArrowUpRight className="w-3.5 h-3.5 text-muted/70 group-hover:text-accent group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-all shrink-0" />
                 </span>
-                <span className="text-xs text-muted/70 font-mono">
-                  Nov-2025 - Apr-2026
+                <span className="text-xs text-muted/80 font-mono group-hover:text-foreground transition-colors">
+                  Nov 2025 - Apr 2026
                 </span>
               </div>
-              <div className="text-xs text-muted font-mono">
-                Full Stack Developer · Mumbai, India
+              <div className="text-xs text-muted font-mono mt-0.5">
+                Full Stack Developer · Valnee Solutions
               </div>
               <p className="text-muted text-sm sm:text-[15px] leading-[1.6] pt-1">
-                Built and maintained an ad analysis pipeline that would scrape ads from the Meta Ad Library rank and compare competitor ads using Redis as a messaging queue and asynchronous Celery workers. 
+                Built and maintained an ad analysis pipeline that would scrape ads from the Meta Ad Library rank and compare competitor ads using Redis as a messaging queue and asynchronous Celery workers.
               </p>
-            </div>
+            </Link>
 
-            <div className="space-y-1.5">
-              <div className="flex items-baseline justify-between w-full">
-                <span className="font-medium text-foreground text-sm sm:text-[15px]">
-                  Company Name
+            {/* Thyne Jewels / Valnee Case Study */}
+            <Link
+              href="https://www.valnee.com/case-studies/thyne-ai-case-study"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="-mx-3 flex flex-col rounded-lg px-3 py-2.5 sm:py-3 transition-colors hover:bg-surface-hover group cursor-pointer no-underline focus:outline-none focus-visible:ring-1 focus-visible:ring-accent"
+            >
+              <div className="flex items-center justify-between w-full">
+                <span className="font-medium text-foreground group-hover:text-accent transition-colors inline-flex items-center gap-1.5">
+                  <span>Thyne Jewels</span>
+                  <ArrowUpRight className="w-3.5 h-3.5 text-muted/70 group-hover:text-accent group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-all shrink-0" />
                 </span>
-                <span className="text-xs text-muted/70 font-mono">
-                  2024 — 2025
+                <span className="text-xs text-muted/80 font-mono group-hover:text-foreground transition-colors">
+                  Feb 2026 - July 2026
                 </span>
               </div>
-              <div className="text-xs text-muted font-mono">
-                Role · Location
+              <div className="text-xs text-muted font-mono mt-0.5">
+                Full Stack Developer · Valnee Solutions
               </div>
               <p className="text-muted text-sm sm:text-[15px] leading-[1.6] pt-1">
-                Description of responsibilities, technologies used, architectures designed, and projects delivered.
+                Built a Full stack Flutter Application with a Go backend for an E-commerce Jewellery Application. Handled deployment across the Play Store, App Store and AWS. Restructured infrastructure to cut client's cloud costs by 30%.
               </p>
-            </div>
+            </Link>
 
-            <div className="space-y-1.5">
-              <div className="flex items-baseline justify-between w-full">
-                <span className="font-medium text-foreground text-sm sm:text-[15px]">
-                  Company Name
+            {/* Reach Saga */}
+            <Link
+              href="https://reachsaga.com"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="-mx-3 flex flex-col rounded-lg px-3 py-2.5 sm:py-3 transition-colors hover:bg-surface-hover group cursor-pointer no-underline focus:outline-none focus-visible:ring-1 focus-visible:ring-accent"
+            >
+              <div className="flex items-center justify-between w-full">
+                <span className="font-medium text-foreground group-hover:text-accent transition-colors inline-flex items-center gap-1.5">
+                  <span>Reach Saga</span>
+                  <ArrowUpRight className="w-3.5 h-3.5 text-muted/70 group-hover:text-accent group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-all shrink-0" />
                 </span>
-                <span className="text-xs text-muted/70 font-mono">
-                  2023 — 2024
+                <span className="text-xs text-muted/80 font-mono group-hover:text-foreground transition-colors">
+                  June 2026 - August 2026
                 </span>
               </div>
-              <div className="text-xs text-muted font-mono">
-                Role · Location
+              <div className="text-xs text-muted font-mono mt-0.5">
+                Full Stack Developer · Valnee Solutions
               </div>
               <p className="text-muted text-sm sm:text-[15px] leading-[1.6] pt-1">
-                Description of responsibilities, technologies used, architectures designed, and projects delivered.
+                Built an AI Video Generation and Editing Pipeline to for SEO optimised Articles. Designed AI pipelines to analyse Keywords for SEO first content.
               </p>
-            </div>
+            </Link>
           </div>
         </section>
 
