@@ -1,249 +1,116 @@
 @import "tailwindcss";
 @import "tw-animate-css";
+@import "katex/dist/katex.min.css";
 
-:root {
-  --background: oklch(1 0 0);
-  --foreground: oklch(0.145 0 0);
-  --card: oklch(1 0 0);
-  --card-foreground: oklch(0.145 0 0);
-  --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.145 0 0);
-  --primary: oklch(0.205 0 0);
-  --primary-foreground: oklch(0.985 0 0);
-  --secondary: oklch(0.97 0 0);
-  --secondary-foreground: oklch(0.205 0 0);
-  --muted: oklch(0.97 0 0);
-  --muted-foreground: oklch(0.556 0 0);
-  --accent: oklch(0.97 0 0);
-  --accent-foreground: oklch(0.205 0 0);
-  --destructive: oklch(0.577 0.245 27.325);
-  --destructive-foreground: oklch(0.577 0.245 27.325);
-  --border: oklch(0.922 0 0);
-  --input: oklch(0.922 0 0);
-  --ring: oklch(0.708 0 0);
-  --chart-1: oklch(0.646 0.222 41.116);
-  --chart-2: oklch(0.6 0.118 184.704);
-  --chart-3: oklch(0.398 0.07 227.392);
-  --chart-4: oklch(0.828 0.189 84.429);
-  --chart-5: oklch(0.769 0.188 70.08);
-  --radius: 0.625rem;
-  --sidebar: oklch(0.985 0 0);
-  --sidebar-foreground: oklch(0.145 0 0);
-  --sidebar-primary: oklch(0.205 0 0);
-  --sidebar-primary-foreground: oklch(0.985 0 0);
-  --sidebar-accent: oklch(0.97 0 0);
-  --sidebar-accent-foreground: oklch(0.205 0 0);
-  --sidebar-border: oklch(0.922 0 0);
-  --sidebar-ring: oklch(0.708 0 0);
+/* Berkeley Mono font definition */
+@font-face {
+  font-family: 'Berkeley Mono';
+  src: local('Berkeley Mono'), local('BerkeleyMono-Regular'), local('BerkeleyMono'),
+       url('/fonts/BerkeleyMono-Regular.woff2') format('woff2');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
 }
 
-.dark {
-  --background: oklch(0.145 0 0);
-  --foreground: oklch(0.985 0 0);
-  --card: oklch(0.145 0 0);
-  --card-foreground: oklch(0.985 0 0);
-  --popover: oklch(0.145 0 0);
-  --popover-foreground: oklch(0.985 0 0);
-  --primary: oklch(0.985 0 0);
-  --primary-foreground: oklch(0.205 0 0);
-  --secondary: oklch(0.269 0 0);
-  --secondary-foreground: oklch(0.985 0 0);
-  --muted: oklch(0.269 0 0);
-  --muted-foreground: oklch(0.708 0 0);
-  --accent: oklch(0.269 0 0);
-  --accent-foreground: oklch(0.985 0 0);
-  --destructive: oklch(0.396 0.141 25.723);
-  --destructive-foreground: oklch(0.637 0.237 25.331);
-  --border: oklch(0.269 0 0);
-  --input: oklch(0.269 0 0);
-  --ring: oklch(0.439 0 0);
-  --chart-1: oklch(0.488 0.243 264.376);
-  --chart-2: oklch(0.696 0.17 162.48);
-  --chart-3: oklch(0.769 0.188 70.08);
-  --chart-4: oklch(0.627 0.265 303.9);
-  --chart-5: oklch(0.645 0.246 16.439);
-  --sidebar: oklch(0.205 0 0);
-  --sidebar-foreground: oklch(0.985 0 0);
-  --sidebar-primary: oklch(0.488 0.243 264.376);
-  --sidebar-primary-foreground: oklch(0.985 0 0);
-  --sidebar-accent: oklch(0.269 0 0);
-  --sidebar-accent-foreground: oklch(0.985 0 0);
-  --sidebar-border: oklch(0.269 0 0);
-  --sidebar-ring: oklch(0.439 0 0);
+@font-face {
+  font-family: 'Berkeley Mono';
+  src: local('Berkeley Mono Bold'), local('BerkeleyMono-Bold'),
+       url('/fonts/BerkeleyMono-Bold.woff2') format('woff2');
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* Ghostty Gruvbox Dark Hard */
+:root {
+  --background: #1d2021;
+  --foreground: #ebdbb2;
+  --muted: #a89984;
+  --border: #3c3836;
+  --surface: #282828;
+  --surface-hover: #32302f;
+  --accent: #fabd2f;
+  --accent-secondary: #fe8019;
+  --accent-green: #b8bb26;
+  --accent-cyan: #8ec07c;
+  --accent-yellow: #fabd2f;
+  --accent-orange: #fe8019;
+  --accent-red: #fb4934;
+  --accent-blue: #83a598;
+  --accent-purple: #d3869b;
+  --selection-bg: #665c54;
+  --selection-fg: #ebdbb2;
 }
 
 @theme inline {
+  --font-mono: 'Berkeley Mono', var(--font-jetbrains-mono), monospace;
+  --font-sans: 'Berkeley Mono', var(--font-jetbrains-mono), monospace;
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --color-card: var(--card);
-  --color-card-foreground: var(--card-foreground);
-  --color-popover: var(--popover);
-  --color-popover-foreground: var(--popover-foreground);
-  --color-primary: var(--primary);
-  --color-primary-foreground: var(--primary-foreground);
-  --color-secondary: var(--secondary);
-  --color-secondary-foreground: var(--secondary-foreground);
   --color-muted: var(--muted);
-  --color-muted-foreground: var(--muted-foreground);
-  --color-accent: var(--accent);
-  --color-accent-foreground: var(--accent-foreground);
-  --color-destructive: var(--destructive);
-  --color-destructive-foreground: var(--destructive-foreground);
   --color-border: var(--border);
-  --color-input: var(--input);
-  --color-ring: var(--ring);
-  --color-chart-1: var(--chart-1);
-  --color-chart-2: var(--chart-2);
-  --color-chart-3: var(--chart-3);
-  --color-chart-4: var(--chart-4);
-  --color-chart-5: var(--chart-5);
-  --radius-sm: calc(var(--radius) - 4px);
-  --radius-md: calc(var(--radius) - 2px);
-  --radius-lg: var(--radius);
-  --radius-xl: calc(var(--radius) + 4px);
-  --color-sidebar: var(--sidebar);
-  --color-sidebar-foreground: var(--sidebar-foreground);
-  --color-sidebar-primary: var(--sidebar-primary);
-  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
-  --color-sidebar-accent: var(--sidebar-accent);
-  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
-  --color-sidebar-border: var(--sidebar-border);
-  --color-sidebar-ring: var(--sidebar-ring);
-
-  /* Omarchy palette colors */
-  --color-theme-accent: var(--theme-accent);
-  --color-theme-red: var(--theme-red);
-  --color-theme-yellow: var(--theme-yellow);
-  --color-theme-orange: var(--theme-orange);
-  --color-theme-green: var(--theme-green);
-  --color-theme-cyan: var(--theme-cyan);
-  --color-theme-blue: var(--theme-blue);
-  --color-theme-magenta: var(--theme-magenta);
-  --color-theme-brown: var(--theme-brown);
-  --color-theme-fg: var(--theme-fg);
-  --color-theme-fg-dark: var(--theme-fg-dark);
-  --color-theme-fg-light: var(--theme-fg-light);
-  --color-theme-fg-bright: var(--theme-fg-bright);
-  --color-theme-bg-lighter: var(--theme-bg-lighter);
-  --color-theme-bg-dark: var(--theme-bg-dark);
-  --color-theme-bg-darker: var(--theme-bg-darker);
-  --color-theme-muted: var(--theme-muted);
-  --color-theme-selection: var(--theme-selection);
-
-  /* Semantic blog & typography tokens */
-  --color-blog-text: var(--color-text);
-  --color-blog-bold: var(--color-text-bold);
-  --color-blog-math: var(--color-math);
-  --color-blog-code: var(--color-code);
-  --color-blog-link: var(--color-link);
+  --color-surface: var(--surface);
+  --color-surface-hover: var(--surface-hover);
+  --color-accent: var(--accent);
+  --color-accent-secondary: var(--accent-secondary);
+  --color-accent-green: var(--accent-green);
+  --color-accent-cyan: var(--accent-cyan);
+  --color-accent-yellow: var(--accent-yellow);
+  --color-accent-orange: var(--accent-orange);
+  --color-accent-red: var(--accent-red);
+  --color-accent-blue: var(--accent-blue);
+  --color-accent-purple: var(--accent-purple);
 }
 
 @layer base {
   * {
-    @apply border-border outline-ring/50;
+    border-color: var(--border);
+  }
+  html {
+    background-color: var(--background);
+    color: var(--foreground);
   }
   body {
-    @apply bg-background text-foreground;
+    font-family: 'Berkeley Mono', var(--font-jetbrains-mono), ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+    font-size: 14.5px;
+    line-height: 1.6;
+    background-color: var(--background);
+    color: var(--foreground);
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    font-feature-settings: "calt" 1, "liga" 1;
+    letter-spacing: -0.012em;
   }
 
-  /* Universal Semantic Typography for Blog & Content */
-  .blog-content,
-  article.blog-article {
-    color: var(--color-text, var(--foreground));
-  }
-
-  .blog-content h1,
-  .blog-content h2,
-  .blog-content h3,
-  .blog-content h4,
-  article.blog-article h1,
-  article.blog-article h2,
-  article.blog-article h3,
-  article.blog-article h4 {
-    color: var(--color-text-bold, var(--theme-fg-bright, var(--foreground)));
-  }
-
-  .blog-content strong,
-  .blog-content b,
-  article strong,
-  article b {
-    color: var(--color-text-bold, var(--theme-fg-bright, var(--foreground)));
-    font-weight: 600;
-  }
-
-  .katex,
-  .MathJax,
-  .math,
-  .math-inline,
-  .math-block {
-    color: var(--color-math, var(--theme-yellow, #d79921));
-    font-family: var(--font-geist-mono, monospace);
-  }
-
-  .math-inline {
-    color: var(--color-math, var(--theme-yellow, #d79921));
+  h1, h2, h3, h4, h5, h6 {
+    font-family: 'Berkeley Mono', var(--font-jetbrains-mono), monospace;
     font-weight: 500;
   }
 
-  .math-block,
+  code, kbd, samp, pre, .font-mono {
+    font-family: 'Berkeley Mono', var(--font-jetbrains-mono), monospace;
+  }
+
+  ::selection {
+    background-color: var(--selection-bg);
+    color: var(--selection-fg);
+  }
+
+  /* KaTeX mathematical formulas styling */
   .katex-display {
-    display: block !important;
-    text-align: center !important;
-    margin: 2rem auto !important;
-    padding: 0.75rem 0 !important;
-    font-size: 1.15rem;
-    letter-spacing: 0.025em;
-    color: var(--color-math, var(--theme-yellow, #d79921));
+    margin: 1.5rem 0 !important;
     overflow-x: auto;
     overflow-y: hidden;
+    padding: 0.5rem 0;
   }
-
-  .katex-display > .katex {
-    display: inline-block !important;
-    text-align: center !important;
-    color: var(--color-math, var(--theme-yellow, #d79921)) !important;
-  }
-
-  .blog-content :not(pre) > code,
-  article.blog-article :not(pre) > code {
-    color: var(--color-code, var(--theme-green, #549e6a));
-    background-color: var(--theme-bg-lighter, rgba(255, 255, 255, 0.05));
-    padding: 0.15em 0.4em;
-    border-radius: 0.25rem;
-    border: 1px solid var(--border);
-    font-size: 0.9em;
-  }
-
-  .blog-content a:not([class*="text-"]),
-  article.blog-article a:not([class*="text-"]) {
-    color: var(--color-link, var(--theme-accent));
-    text-decoration: underline;
-    text-underline-offset: 4px;
-    transition: color 0.2s ease;
-  }
-
-  .blog-content a:not([class*="text-"]):hover,
-  article.blog-article a:not([class*="text-"]):hover {
-    color: var(--color-text-bold, var(--foreground));
+  .katex {
+    font-size: 1.05em;
+    color: var(--accent-yellow);
   }
 }
 
 @layer utilities {
-  .animate-fade-in-up {
-    animation: fade-in-up 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-  }
-
-  @keyframes fade-in-up {
-    from {
-      opacity: 0;
-      transform: translateY(24px);
-    }
-    to {
-      opacity: 1;
-      transform: translateY(0);
-    }
-  }
-
   .no-scrollbar::-webkit-scrollbar {
     display: none;
   }

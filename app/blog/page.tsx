@@ -1,99 +1,71 @@
 import Link from "next/link"
-import { ArrowLeft, ArrowRight } from "lucide-react"
 import { getAllPosts, formatPostDate } from "@/lib/blog"
+import { TopNav } from "@/components/top-nav"
+import { ArrowLeft } from "lucide-react"
 import type { Metadata } from "next"
 
 export const metadata: Metadata = {
-  title: "Blog - Aryan Mane",
-  description: "Things I've learned, built, and found interesting enough to write about.",
+  title: "Writing — Aryan Mane",
+  description: "Notes, writeups, and thoughts on distributed systems, AI fine-tuning, and software engineering.",
 }
 
-export default async function BlogPage() {
+export const revalidate = 60
+
+export default async function BlogIndexPage() {
   const posts = await getAllPosts()
 
   return (
-    <div className="min-h-screen bg-background text-foreground">
-      <main className="max-w-3xl mx-auto px-6 sm:px-8 lg:px-12">
-        {/* Header */}
-        <header className="pt-12 pb-16 sm:pb-24">
-          <div className="flex items-center justify-between mb-12">
+    <div className="mx-auto max-w-[692px] px-6 py-12 sm:py-20 md:py-24 text-foreground antialiased selection:bg-accent selection:text-background">
+      {/* Top Bar */}
+      <TopNav />
+
+      {/* Top Header */}
+      <header className="mb-14 sm:mb-20 flex items-start justify-between">
+        <div className="flex flex-col">
+          <Link
+            href="/"
+            className="font-medium text-base sm:text-[17px] text-foreground hover:text-accent transition-colors no-underline flex items-center gap-1.5"
+          >
+            <ArrowLeft className="w-3.5 h-3.5" />
+            <span>Aryan Mane</span>
+          </Link>
+          <span className="text-muted text-sm sm:text-[15px] font-normal mt-0.5">
+            Full Stack Developer
+          </span>
+        </div>
+      </header>
+
+      <main className="space-y-12">
+        <div>
+          <h1 className="text-xl sm:text-2xl font-medium tracking-tight text-foreground">
+            Writing
+          </h1>
+          <p className="text-muted text-sm sm:text-base mt-2 leading-[1.6]">
+            Notes, writeups, and experiences building distributed systems, training LLMs, and systems engineering.
+          </p>
+        </div>
+
+        <div className="flex flex-col gap-1 sm:gap-1.5 pt-4">
+          {posts.map((post) => (
             <Link
-              href="/"
-              className="flex items-center gap-2 text-muted-foreground hover:text-foreground transition-colors text-sm font-mono"
+              key={post.slug}
+              href={`/blog/${post.slug}`}
+              className="-mx-3 flex flex-col rounded-lg px-3 py-3 transition-colors hover:bg-surface-hover group no-underline"
             >
-              <ArrowLeft className="w-3.5 h-3.5" />
-              Home
+              <div className="flex items-center justify-between w-full">
+                <span className="font-medium text-foreground group-hover:text-accent transition-colors">
+                  {post.title}
+                </span>
+                <span className="text-xs text-muted/70 font-mono group-hover:text-foreground transition-colors">
+                  {formatPostDate(post.published_at)}
+                </span>
+              </div>
+              <span className="text-muted text-sm mt-0.5 leading-[1.6]">
+                {post.description}
+              </span>
             </Link>
-            <div className="text-sm text-muted-foreground font-mono tracking-wider">
-              BLOG
-            </div>
-          </div>
-
-          <div className="space-y-4">
-            <h1 className="text-4xl sm:text-5xl font-light tracking-tight">
-              Writing
-            </h1>
-            <p className="text-muted-foreground text-lg font-light max-w-md leading-relaxed">
-              Things I&apos;ve learned, built, and found interesting enough to write about.
-            </p>
-          </div>
-        </header>
-
-        {/* Posts */}
-        <section className="pb-24">
-          <div className="text-[10px] uppercase tracking-[0.3em] text-muted-foreground font-mono mb-8 pb-3 border-b border-border">
-            All Posts ({posts.length})
-          </div>
-
-          {posts.length === 0 ? (
-            <div className="py-12 text-center text-muted-foreground font-mono text-sm border border-dashed border-border/60 rounded-lg">
-              No posts found. Publish your first post via the blog API!
-            </div>
-          ) : (
-            <div className="space-y-0">
-              {posts.map((post) => {
-                const formattedDate = formatPostDate(post.published_at)
-
-                return (
-                  <Link
-                    key={post.id || post.slug}
-                    href={`/blog/${post.slug}`}
-                    className="group flex flex-col sm:flex-row sm:items-baseline justify-between gap-3 sm:gap-8 py-6 border-b border-border/50 hover:border-theme-accent/30 transition-colors"
-                  >
-                    <div className="space-y-2 flex-1">
-                      <h2 className="text-xl font-light text-foreground group-hover:text-theme-fg-bright transition-colors duration-300">
-                        {post.title}
-                      </h2>
-                      {post.description && (
-                        <p className="text-sm text-muted-foreground font-light leading-relaxed max-w-lg">
-                          {post.description}
-                        </p>
-                      )}
-                      {post.tags.length > 0 && (
-                        <div className="flex flex-wrap gap-2 pt-2">
-                          {post.tags.map((tag) => (
-                            <span
-                              key={tag}
-                              className="px-2 py-0.5 rounded-full border border-theme-accent/30 text-theme-accent font-mono text-[10px] uppercase tracking-wider"
-                            >
-                              {tag}
-                            </span>
-                          ))}
-                        </div>
-                      )}
-                    </div>
-                    <div className="flex items-center gap-3 shrink-0">
-                      <span className="text-xs text-muted-foreground/60 font-mono">
-                        {formattedDate}
-                      </span>
-                      <ArrowRight className="w-3.5 h-3.5 text-border group-hover:text-theme-accent transition-colors duration-300" />
-                    </div>
-                  </Link>
-                )
-              })}
-            </div>
-          )}
-        </section>
+          ))}
+        </div>
       </main>
     </div>
   )

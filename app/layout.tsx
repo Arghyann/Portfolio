@@ -1,18 +1,18 @@
 import type React from "react"
 import type { Metadata } from "next"
-import { Geist } from "next/font/google"
-import { ThemeInjector } from "@/components/theme-injector"
+import { JetBrains_Mono } from "next/font/google"
+import { Toaster } from "sonner"
 import "./globals.css"
 
-const geist = Geist({
+const jetbrainsMono = JetBrains_Mono({
   subsets: ["latin"],
+  variable: "--font-jetbrains-mono",
   display: "swap",
-  variable: "--font-geist",
 })
 
 export const metadata: Metadata = {
-  title: "Aryan Mane - Full Stack Developer",
-  description: "Full Stack Developer working across Kubernetes, Go, AWS, and distributed systems.",
+  title: "Aryan Mane",
+  description: "Full Stack Developer working across Go, Kubernetes, AWS, and distributed systems.",
   icons: {
     icon: "/icon.svg",
     shortcut: "/icon.svg",
@@ -26,10 +26,20 @@ export default function RootLayout({
   children: React.ReactNode
 }>) {
   return (
-    <html lang="en" className={`${geist.variable}`}>
-      <body className="font-sans antialiased">
-        <ThemeInjector />
+    <html lang="en" className={jetbrainsMono.variable}>
+      <body className="min-h-screen bg-background text-foreground antialiased selection:bg-[var(--selection-bg)] selection:text-[var(--selection-fg)]">
         {children}
+        <Toaster
+          position="bottom-right"
+          toastOptions={{
+            style: {
+              background: "var(--surface)",
+              color: "var(--foreground)",
+              border: "1px solid var(--border)",
+              fontFamily: "var(--font-mono)",
+            },
+          }}
+        />
       </body>
     </html>
   )

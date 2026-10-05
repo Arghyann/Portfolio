@@ -1,5 +1,6 @@
 import { getAllPosts, getPostBySlug, formatPostDate } from "@/lib/blog"
 import { MarkdownRenderer } from "@/components/markdown-renderer"
+import { TopNav } from "@/components/top-nav"
 import Link from "next/link"
 import { notFound } from "next/navigation"
 import { ArrowLeft } from "lucide-react"
@@ -24,12 +25,12 @@ export async function generateMetadata({
 
   if (!post) {
     return {
-      title: "Post Not Found",
+      title: "Post Not Found - Aryan Mane",
     }
   }
 
   return {
-    title: `${post.title} - Aryan Mane`,
+    title: `${post.title} — Aryan Mane`,
     description: post.description || post.title,
   }
 }
@@ -45,68 +46,73 @@ export default async function BlogPostPage({ params }: PageProps) {
   const formattedDate = formatPostDate(post.published_at)
 
   return (
-    <div className="min-h-screen bg-background text-foreground">
-      <article className="blog-article max-w-3xl mx-auto px-6 sm:px-8 lg:px-12">
-        {/* Nav */}
-        <nav className="pt-12 pb-16">
+    <div className="mx-auto max-w-[692px] px-6 py-12 sm:py-20 md:py-24 text-foreground antialiased selection:bg-accent selection:text-background">
+      {/* Top Bar */}
+      <TopNav />
+
+      {/* Top Header */}
+      <header className="mb-12 sm:mb-16 flex items-start justify-between">
+        <div className="flex flex-col">
           <Link
-            href="/blog"
-            className="flex items-center gap-2 text-muted-foreground hover:text-foreground transition-colors text-sm font-mono"
+            href="/"
+            className="font-medium text-base sm:text-[17px] text-foreground hover:text-accent transition-colors no-underline flex items-center gap-1.5"
           >
             <ArrowLeft className="w-3.5 h-3.5" />
-            Blog
+            <span>Aryan Mane</span>
           </Link>
-        </nav>
+          <span className="text-muted text-sm sm:text-[15px] font-normal mt-0.5">
+            Full Stack Developer
+          </span>
+        </div>
+      </header>
 
-        {/* Header */}
-        <header className="pb-12 border-b border-border/50">
-          <div className="space-y-4">
-            <div className="flex flex-wrap items-center gap-3 text-xs font-mono text-muted-foreground/70 uppercase tracking-wider">
-              <span>{formattedDate}</span>
-              <span className="w-1 h-[1px] bg-border" />
-              <span>{post.read_time}</span>
-            </div>
-
-            <h1 className="text-3xl sm:text-4xl lg:text-5xl font-light tracking-tight leading-tight text-theme-fg-bright">
-              {post.title}
-            </h1>
-
-            {post.tags.length > 0 && (
-              <div className="flex flex-wrap gap-2 pt-1">
-                {post.tags.map((tag) => (
-                  <span
-                    key={tag}
-                    className="px-2.5 py-0.5 rounded-full border border-theme-accent/30 text-theme-accent font-mono text-[11px] uppercase tracking-wider"
-                  >
-                    {tag}
-                  </span>
-                ))}
-              </div>
-            )}
-
-            {post.description && (
-              <p className="text-base sm:text-lg text-muted-foreground font-light leading-relaxed pt-2">
-                {post.description}
-              </p>
-            )}
+      {/* Article */}
+      <article className="space-y-8 leading-[1.6]">
+        <div className="space-y-3 pb-6 border-b border-border">
+          <div className="flex items-center gap-3 text-xs font-mono text-muted/70">
+            <span>{formattedDate}</span>
+            <span>&middot;</span>
+            <span>{post.read_time}</span>
           </div>
-        </header>
 
-        {/* Content */}
-        <div className="py-12">
+          <h1 className="text-2xl sm:text-3xl font-medium tracking-tight text-foreground">
+            {post.title}
+          </h1>
+
+          {post.description && (
+            <p className="text-muted text-sm sm:text-base leading-[1.6]">
+              {post.description}
+            </p>
+          )}
+
+          {post.tags && post.tags.length > 0 && (
+            <div className="flex flex-wrap gap-1.5 pt-2">
+              {post.tags.map((tag) => (
+                <span
+                  key={tag}
+                  className="px-2 py-0.5 text-xs font-mono rounded bg-surface text-foreground border border-border"
+                >
+                  {tag}
+                </span>
+              ))}
+            </div>
+          )}
+        </div>
+
+        <div className="pt-2">
           <MarkdownRenderer content={post.body} />
         </div>
 
-        {/* Footer */}
-        <footer className="py-12 border-t border-border/50">
+        {/* Back Link */}
+        <div className="pt-12 mt-12 border-t border-border flex items-center text-xs text-muted/70 font-mono">
           <Link
             href="/blog"
-            className="flex items-center gap-2 text-sm font-mono text-muted-foreground hover:text-foreground transition-colors"
+            className="inline-flex items-center gap-1.5 text-foreground hover:text-accent transition-colors"
           >
             <ArrowLeft className="w-3.5 h-3.5" />
-            Back to all posts
+            <span>All posts</span>
           </Link>
-        </footer>
+        </div>
       </article>
     </div>
   )

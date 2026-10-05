@@ -1,3 +1,5 @@
+import { FALLBACK_POSTS } from "./blog-data"
+
 export interface BlogPostSummary {
   id: string
   slug: string
@@ -17,21 +19,24 @@ const API_BASE_URL =
 
 export function formatPostDate(raw?: string): string {
   if (!raw || raw.startsWith("0001")) {
-    return "June 2026"
+    return "jun 2026"
   }
   try {
     const cleanStr =
       raw.includes(" ") && !raw.includes("T") ? raw.replace(" ", "T") + "Z" : raw
     const d = new Date(cleanStr)
     if (isNaN(d.getTime()) || d.getFullYear() <= 1) {
-      return "June 2026"
+      return "jun 2026"
     }
-    return d.toLocaleDateString("en-US", {
-      month: "short",
-      year: "numeric",
-    })
+    return d
+      .toLocaleDateString("en-US", {
+        month: "short",
+        day: "numeric",
+        year: "numeric",
+      })
+      .toLowerCase()
   } catch {
-    return "June 2026"
+    return "jun 2026"
   }
 }
 
@@ -99,48 +104,53 @@ function normalizePost(data: any, fallbackSlug?: string): BlogPost {
 
 export async function getAllPosts(): Promise<BlogPostSummary[]> {
   try {
+    const controller = new AbortController()
+    const timeout = setTimeout(() => controller.abort(), 4000)
+
     const res = await fetch(`${API_BASE_URL}/posts`, {
-      next: { revalidate: 30 },
+      next: { revalidate: 60 },
+      signal: controller.signal,
     })
+    clearTimeout(timeout)
 
-    if (!res.ok) {
-      console.warn(`[blog-api] Failed to fetch posts: ${res.status} ${res.statusText}`)
-      return []
+    if (res.ok) {
+      const data = await res.json()
+      if (Array.isArray(data) && data.length > 0) {
+        return data.map((item) => normalizeSummary(item))
+      }
     }
-
-    const data = await res.json()
-    if (!Array.isArray(data)) {
-      return []
-    }
-
-    return data.map((item) => normalizeSummary(item))
   } catch (err) {
-    console.warn(`[blog-api] Error connecting to ${API_BASE_URL}/posts:`, err)
-    return []
+    // Graceful fallback to static cached posts
   }
+
+  return FALLBACK_POSTS.map((item) => normalizeSummary(item))
 }
 
 export async function getPostBySlug(slug: string): Promise<BlogPost | null> {
   try {
+    const controller = new AbortController()
+    const timeout = setTimeout(() => controller.abort(), 4000)
+
     const res = await fetch(`${API_BASE_URL}/posts/${slug}`, {
-      next: { revalidate: 30 },
+      next: { revalidate: 60 },
+      signal: controller.signal,
     })
+    clearTimeout(timeout)
 
-    if (res.status === 404) {
-      return null
+    if (res.ok) {
+      const data = await res.json()
+      if (data) {
+        return normalizePost(data, slug)
+      }
     }
-
-    if (!res.ok) {
-      console.warn(`[blog-api] Failed to fetch post ${slug}: ${res.status} ${res.statusText}`)
-      return null
-    }
-
-    const data = await res.json()
-    if (!data) return null
-
-    return normalizePost(data, slug)
   } catch (err) {
-    console.warn(`[blog-api] Error connecting to ${API_BASE_URL}/posts/${slug}:`, err)
-    return null
+    // Graceful fallback
   }
+
+  const fallback = FALLBACK_POSTS.find((p) => p.slug === slug)
+  if (fallback) {
+    return normalizePost(fallback, slug)
+  }
+
+  return null
 }
