@@ -19,7 +19,7 @@ export const projects: ProjectData[] = [
   },
   {
     title: "Distributed Blockchain",
-    subtitle: "Built a blockchain for browsers that can talk over webRTC with a matchmaker Go server. You can mine some coin that hold no value right now!" 
+    subtitle: "Built a blockchain for browsers that can talk over webRTC with a matchmaker Go server. You can mine some coin that hold no value right now!", 
     period: "2026",
     liveUrl: "https://crypto.aryanmane.xyz",
     githubUrl: "https://github.com/Arghyann/Blockchain",
