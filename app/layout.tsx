@@ -2,6 +2,7 @@ import type React from "react"
 import type { Metadata } from "next"
 import { JetBrains_Mono } from "next/font/google"
 import { Toaster } from "sonner"
+import { KeyboardNav } from "@/components/keyboard-nav"
 import "./globals.css"
 
 const jetbrainsMono = JetBrains_Mono({
@@ -28,6 +29,7 @@ export default function RootLayout({
   return (
     <html lang="en" className={jetbrainsMono.variable}>
       <body className="min-h-screen bg-background text-foreground antialiased selection:bg-[var(--selection-bg)] selection:text-[var(--selection-fg)]">
+        <KeyboardNav />
         {children}
         <Toaster
           position="bottom-right"
