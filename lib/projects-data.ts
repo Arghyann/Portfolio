@@ -25,6 +25,12 @@ export const projects: ProjectData[] = [
     githubUrl: "https://github.com/Arghyann/Blockchain",
   },
   {
+    title: "Relay server for ipv4 only machines",
+    subtitle: "Built a server that would relay network traffic from ipv4 machines to allow them to connect to ipv6 machines essentially acting as a forward proxy",
+    period: "2026",
+    githubUrl: "https://github.com/Arghyann/relay-server",
+  },
+  {
     title: "Loan Approval Microservices Platform",
     subtitle: "Event-driven system in Go on Amazon EKS with RabbitMQ and PostgreSQL sustaining 1M+ req/sec.",
     period: "2026",
@@ -41,4 +47,5 @@ export const projects: ProjectData[] = [
 export const featuredProjects: ProjectData[] = [
   projects[0], // chat.aryanmane.xyz
   projects[1], // crypto.aryanmane.xyz
+  projects[2], // relay server
 ]
