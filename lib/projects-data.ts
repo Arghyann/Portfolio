@@ -25,8 +25,8 @@ export const projects: ProjectData[] = [
     githubUrl: "https://github.com/Arghyann/Blockchain",
   },
   {
-    title: "Relay server for ipv4 only machines",
-    subtitle: "Built a server that would relay network traffic from ipv4 machines to allow them to connect to ipv6 machines essentially acting as a forward proxy",
+    title: "Relay server and self hosted VPN",
+    subtitle: "Built a server that would relay network traffic from IPv4 machines to allow them to connect to IPv6 machines essentially acting as a forward proxy. Also added a funtionality to use the server as a self hosted VPN using a virtual Kernel Network Interface.",
     period: "2026",
     githubUrl: "https://github.com/Arghyann/relay-server",
   },
